@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "914382843149",
+    "project_id": "inspect-4be8f",
+    "storage_bucket": "inspect-4be8f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:914382843149:android:de2e275e617f07dc7dd444",
+        "android_client_info": {
+          "package_name": "com.example.inspect"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOrBdZNj8h2uPLpJJUXsPBu9wdCDIonAg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
