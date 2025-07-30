@@ -119,7 +119,7 @@ class _ChecklistState extends State<Checklist> {
 
                   icon: const Icon(Icons.save_alt),
                   label: const Text(
-                    'Guardar y Exportar',
+                    'Guardar',
                     style: TextStyle(color: Colors.white),
                   ),
                   style: ElevatedButton.styleFrom(
