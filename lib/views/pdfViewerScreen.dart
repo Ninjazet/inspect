@@ -7,11 +7,9 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 class PdfViewerScreen extends StatefulWidget {
   final File pdfFile;
 
-
   const PdfViewerScreen({
     super.key,
     required this.pdfFile,
-
   });
 
   @override
@@ -19,25 +17,37 @@ class PdfViewerScreen extends StatefulWidget {
 }
 
 class _PdfViewerScreenState extends State<PdfViewerScreen> {
-
-
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Vista previa del PDF'),
+        centerTitle: true,
+        backgroundColor: Colors.blue,
+        elevation: 2,
       ),
-      body: Column(
-        children: [
-          Expanded(child: SfPdfViewer.file(widget.pdfFile)),
-          
-            Padding(
-              padding: const EdgeInsets.all(16.0),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: SfPdfViewer.file(widget.pdfFile),
+            ),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 4,
+                    offset: const Offset(0, -2),
+                  ),
+                ],
+              ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  
-                  const SizedBox(height: 10),
                   ElevatedButton.icon(
                     onPressed: () {
                       Navigator.pushAndRemoveUntil(
@@ -50,10 +60,14 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
                     label: const Text('Nueva inspección'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
-                      minimumSize: const Size(double.infinity, 50),
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size.fromHeight(50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 12),
                   ElevatedButton.icon(
                     onPressed: () {
                       Navigator.push(
@@ -65,13 +79,18 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
                     label: const Text('Ver historial'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.grey[700],
-                      minimumSize: const Size(double.infinity, 50),
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size.fromHeight(50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
-        ],
+          ],
+        ),
       ),
     );
   }
