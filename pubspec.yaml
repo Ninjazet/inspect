@@ -46,6 +46,7 @@ dependencies:
   pdfx: ^2.9.2
   syncfusion_flutter_pdfviewer: ^30.1.42
   top_snackbar_flutter: ^3.3.0
+  provider: ^6.1.5
 
 dev_dependencies:
   flutter_test:

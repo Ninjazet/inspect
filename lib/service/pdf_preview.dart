@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pdfx/pdfx.dart';
 
 class PdfViewerPage extends StatefulWidget {
-  final String pdfPath; // Ruta local del archivo PDF
+  final String pdfPath; 
 
   const PdfViewerPage({super.key, required this.pdfPath, required pdfUrl});
 

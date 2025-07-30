@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:inspect/historial.dart';
-import 'package:inspect/home.dart';
-import 'firebase_options.dart';
+import 'package:inspect/Home/main_navigation.dart';
+import 'package:inspect/views/historial.dart';
+import 'package:inspect/Home/home.dart';
+import 'firebase/firebase_options.dart';
 import 'checklist.dart';
 
 void main() async {
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.red,
         useMaterial3: true,
       ),
-      home: const Home(),
+      home: const MainNavigation(),
     );
   }
 }

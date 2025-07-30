@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:path_provider/path_provider.dart';
-import 'preguntas.dart';
+import '../preguntas.dart';
 
 class PdfService {
   Future<File?> exportarChecklist(

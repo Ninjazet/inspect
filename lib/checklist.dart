@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:inspect/pdfViewerScreen.dart';
+import 'package:inspect/views/pdfViewerScreen.dart';
 import 'checklistForm.dart';
-import 'pdfService.dart';
-import 'firebase_service.dart';
+import 'service/pdfService.dart';
+import 'firebase/firebase_service.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
