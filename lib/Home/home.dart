@@ -31,11 +31,12 @@ class HomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(icon, size: 40, color: color),
-            const SizedBox(height: 10),
+
+            SizedBox(height: 10),
             Text(
               text,
               textAlign: TextAlign.center,
-              style: const TextStyle(fontWeight: FontWeight.w500),
+              style: TextStyle(fontWeight: FontWeight.w500),
             ),
           ],
         ),
@@ -52,48 +53,20 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 1,
-        actions: [
-          Stack(
-            children: [
-              /*IconButton(
-                icon: const Icon(Icons.notifications, color: Colors.blue),
-                onPressed: () {},
-              ),
-              Positioned(
-                right: 10,
-                top: 8,
-                child: Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: const BoxDecoration(
-                    color: Colors.red,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Text(
-                    '3',
-                    style: TextStyle(color: Colors.white, fontSize: 10),
-                  ),
-                ),
-              ),*/
-            ],
-          ),
-        ],
-      ),
+      appBar: AppBar(backgroundColor: Colors.white, elevation: 1),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Center(
+            Center(
               child: Text(
                 "Bienvenido",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
 
-            const SizedBox(height: 84),
+            SizedBox(height: 84),
 
             Center(
               child: Wrap(
@@ -114,15 +87,16 @@ class HomePage extends StatelessWidget {
                   ),
                   buildCard(
                     Icons.apartment,
-                    "ND",
+                    "Recordatorios",
                     Colors.blue,
-                    () => showPressed(context, "ND"),
+                    () => showPressed(context, "Recordatorio"),
                   ),
+
                   buildCard(Icons.history, "Historial", Colors.red, () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => HistorialInspeccionesScreen(),
+                        builder: (context) => HistorialInspecciones(),
                       ),
                     );
                   }),

@@ -28,7 +28,7 @@ class _PdfViewerPageState extends State<PdfViewerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Vista previa PDF')),
+      appBar: AppBar(title: Text('Vista previa PDF')),
       body: PdfViewPinch(controller: _pdfController),
     );
   }

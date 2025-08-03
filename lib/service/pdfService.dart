@@ -1,8 +1,8 @@
 import 'dart:io';
+import 'package:inspect/preguntas.dart';
 import 'package:pdf/widgets.dart' as pw;
-
 import 'package:path_provider/path_provider.dart';
-import '../preguntas.dart';
+
 
 class PdfService {
   Future<File?> exportarChecklist(
@@ -45,7 +45,7 @@ class PdfService {
           ),
           pw.SizedBox(height: 30),
           pw.Text(
-            'SISTEMA ELÉCTRICO',
+            'SISTEMA ELECTRICO',
             style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold),
           ),
           pw.SizedBox(height: 10),

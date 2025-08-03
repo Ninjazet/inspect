@@ -1,10 +1,8 @@
-import 'package:flutter/material.dart';
+
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 import 'package:inspect/Home/main_navigation.dart';
-
-
-import 'firebase/firebase_options.dart';
-
+import 'package:inspect/firebase/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,22 +10,22 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(const MyApp());
+  runApp(const Inspect ());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class Inspect extends StatelessWidget {
+  const Inspect({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Inspección Flota',
+      title: 'Inspeccion Flota',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.red,
         useMaterial3: true,
       ),
-      home: const MainNavigation(),
+      home:  MainNavigation(),
     );
   }
 }

@@ -1,4 +1,4 @@
-// preguntas.dart
+// preguntas
 final List<String> sistemaElectricoKeys = [
   'Luces principales funcionando.',
   'Luces de freno funcionando.',

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'preguntas.dart';
+import 'package:inspect/preguntas.dart';
 
 class ChecklistForm extends StatefulWidget {
   final void Function(Map<String, String?>) onChanged;
@@ -18,7 +18,7 @@ class _ChecklistFormState extends State<ChecklistForm> {
   
 
 
-  // Controladores para los datos generales
+  // Controlador datos generales
   final _numeroInspeccionController = TextEditingController();
   final _inspectorController = TextEditingController();
   final _fechaController = TextEditingController();
@@ -28,7 +28,7 @@ class _ChecklistFormState extends State<ChecklistForm> {
   void initState() {
     super.initState();
 
-    // Establecer fecha actual al campo de fecha
+    // Fecha
     final hoy = DateTime.now();
     final fechaFormateada =
         '${hoy.day.toString().padLeft(2, '0')}/${hoy.month.toString().padLeft(2, '0')}/${hoy.year}';
@@ -39,7 +39,7 @@ class _ChecklistFormState extends State<ChecklistForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(key, style: const TextStyle(fontWeight: FontWeight.bold)),
+        Text(key, style: TextStyle(fontWeight: FontWeight.bold)),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: ['Si', 'No', 'N/A'].map((opcion) {
@@ -55,7 +55,7 @@ class _ChecklistFormState extends State<ChecklistForm> {
                     });
                   },
                 ),
-                Text(opcion, style: const TextStyle(fontSize: 14)),
+                Text(opcion, style: TextStyle(fontSize: 14)),
               ],
             );
           }).toList(),
@@ -64,10 +64,10 @@ class _ChecklistFormState extends State<ChecklistForm> {
     );
   }
 
-  // Sección convertida a ExpansionTile para desplegable
+  // Sección desplegable
   Widget _buildSeccion(String titulo, List<String> claves) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8),
+      margin: EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -83,19 +83,19 @@ class _ChecklistFormState extends State<ChecklistForm> {
             splashColor: Colors.transparent,
           ),
           child: ExpansionTile(
-            tilePadding: const EdgeInsets.symmetric(
+            tilePadding: EdgeInsets.symmetric(
               horizontal: 16,
               vertical: 8,
             ),
-            childrenPadding: const EdgeInsets.only(bottom: 12),
+            childrenPadding:EdgeInsets.only(bottom: 12),
             title: Text(
               titulo,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             children: claves
                 .map(
                   (clave) => Padding(
-                    padding: const EdgeInsets.symmetric(
+                    padding: EdgeInsets.symmetric(
                       horizontal: 16.0,
                       vertical: 4,
                     ),
@@ -111,15 +111,15 @@ class _ChecklistFormState extends State<ChecklistForm> {
 
   Widget _buildDatosGenerales() {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'DATOS GENERALES',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          const Divider(),
+           Divider(),
           TextField(
             controller: _numeroInspeccionController,
             decoration: InputDecoration(
@@ -176,7 +176,7 @@ class _ChecklistFormState extends State<ChecklistForm> {
 
           const SizedBox(height: 16),
           const Text(
-            'INFORMACIÓN DE LA UNIDAD',
+            'INFORMACION DE LA UNIDAD',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const Divider(),
@@ -184,7 +184,7 @@ class _ChecklistFormState extends State<ChecklistForm> {
             controller: _placaController,
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.directions_car),
-              labelText: 'Número de placa',
+              labelText: 'Numero de placa',
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(13),
                 borderSide: BorderSide(color: Colors.blueGrey, width: 3),
@@ -203,7 +203,7 @@ class _ChecklistFormState extends State<ChecklistForm> {
       ),
     );
   }
-
+// Datos generales
   Map<String, String> obtenerDatosGenerales() {
     return {
       'numeroInspeccion': _numeroInspeccionController.text,
@@ -228,7 +228,7 @@ class _ChecklistFormState extends State<ChecklistForm> {
       child: Column(
         children: [
           _buildDatosGenerales(),
-          _buildSeccion('SISTEMA ELÉCTRICO', sistemaElectricoKeys),
+          _buildSeccion('SISTEMA ELECTRICO', sistemaElectricoKeys),
           _buildSeccion('PARTE EXTERIOR', parteExteriorKeys),
           _buildSeccion('SISTEMA DE FRENOS', sistemaFrenosKeys),
           _buildSeccion('SISTEMA MECANICO', sistemaMecanicoKeys),

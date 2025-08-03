@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:inspect/views/pdfViewerScreen.dart';
-import 'checklistForm.dart';
-import 'service/pdfService.dart';
-import 'firebase/firebase_service.dart';
+import 'package:inspect/checklistForm.dart';
+import 'package:inspect/firebase/firebase_service.dart';
+import 'package:inspect/service/pdfService.dart';
+import 'package:inspect/views/pdfViewer.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
@@ -30,10 +30,10 @@ class _ChecklistState extends State<Checklist> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Inspección de unidades')),
+      appBar: AppBar(title: Text('Inspeccion de unidades')),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -42,7 +42,7 @@ class _ChecklistState extends State<Checklist> {
                   onChanged: _onFormChanged,
                   onDatosGeneralesChanged: _onDatosGeneralesChanged,
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 ElevatedButton.icon(
                   onPressed: () async {
                     final placa = _datosGenerales['placa'] ?? '';
@@ -59,7 +59,7 @@ class _ChecklistState extends State<Checklist> {
                     ].any((e) => e.isEmpty)) {
                       showTopSnackBar(
                         Overlay.of(context),
-                        const CustomSnackBar.error(
+                        CustomSnackBar.error(
                           message: 'Completa todos los datos generales',
                         ),
                       );
@@ -70,7 +70,7 @@ class _ChecklistState extends State<Checklist> {
                     final respuestasLimpias = _respuestas.map(
                       (k, v) => MapEntry(k, v ?? ''),
                     );
-
+                    //generar pdf
                     final pdfFile = await _pdfService.exportarChecklist(
                       respuestasLimpias,
                       _datosGenerales,
@@ -79,19 +79,19 @@ class _ChecklistState extends State<Checklist> {
                     if (pdfFile == null) {
                       showTopSnackBar(
                         Overlay.of(context),
-                        const CustomSnackBar.error(
+                        CustomSnackBar.error(
                           message: 'Error al generar el PDF',
                         ),
                       );
                       return;
                     }
-
+                    //subir pdf
                     final pdfUrl = await _firebaseService.subirPdfYObtenerUrl(
                       pdfFile: pdfFile,
                       placa: placa,
                       fecha: fecha,
                     );
-
+                    //guardar
                     await _firebaseService.guardarInspeccionCompleta(
                       placa: placa,
                       numeroInspeccion: numeroInspeccion,
@@ -104,7 +104,7 @@ class _ChecklistState extends State<Checklist> {
 
                     showTopSnackBar(
                       Overlay.of(context),
-                      const CustomSnackBar.success(
+                       CustomSnackBar.success(
                         message: 'Inspección registrada con exito!',
                       ),
                     );
@@ -117,16 +117,13 @@ class _ChecklistState extends State<Checklist> {
                     );
                   },
 
-                  icon: const Icon(Icons.save_alt),
-                  label: const Text(
-                    'Guardar',
-                    style: TextStyle(color: Colors.white),
-                  ),
+                  icon: Icon(Icons.save_alt),
+                  label: Text('Guardar', style: TextStyle(color: Colors.white)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(4),
-                      side: const BorderSide(color: Colors.white, width: 2),
+                      side: BorderSide(color: Colors.white, width: 2),
                     ),
                   ),
                 ),
