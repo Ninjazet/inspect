@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:inspect/checklist.dart';
+import 'package:inspect/views/Recordatorio.dart';
 import 'package:inspect/views/historial.dart';
 
 class HomePage extends StatelessWidget {
@@ -89,7 +90,12 @@ class HomePage extends StatelessWidget {
                     Icons.apartment,
                     "Recordatorios",
                     Colors.blue,
-                    () => showPressed(context, "Recordatorio"),
+                    () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => RecordatoriosScreen()),
+                      );
+                    },
                   ),
 
                   buildCard(Icons.history, "Historial", Colors.red, () {

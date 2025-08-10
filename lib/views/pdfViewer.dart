@@ -1,8 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:inspect/Home/home.dart';
 import 'package:inspect/checklist.dart';
 import 'package:inspect/views/historial.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:cross_file/cross_file.dart';
 
 class PdfViewerScreen extends StatefulWidget {
   final File pdfFile;
@@ -14,31 +17,55 @@ class PdfViewerScreen extends StatefulWidget {
 }
 
 class _PdfViewerScreenState extends State<PdfViewerScreen> {
+  final Color primaryBlue = const Color(0xFF004080); // azul oscuro similar al login
+  final Color orangeAccent = const Color(0xFFF77F00); // naranja usado en texto
+  final Color grayLight = const Color(0xFFF0F4F8); // gris muy claro para fondo
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: grayLight,
       appBar: AppBar(
-        title: Text('Vista previa del PDF'),
+        title: const Text('Vista previa del PDF'),
         centerTitle: true,
-        backgroundColor: Colors.blue,
+        backgroundColor: primaryBlue,
         elevation: 2,
       ),
       body: SafeArea(
         child: Column(
           children: [
-            Expanded(child: SfPdfViewer.file(widget.pdfFile)),
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 8,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: SfPdfViewer.file(widget.pdfFile),
+                ),
+              ),
+            ),
             Container(
               width: double.infinity,
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
               decoration: BoxDecoration(
-                color: Colors.grey[100],
-                boxShadow: [
+                color: Colors.white,
+                boxShadow: const [
                   BoxShadow(
                     color: Colors.black12,
-                    blurRadius: 4,
-                    offset: Offset(0, -2),
+                    blurRadius: 10,
+                    offset: Offset(0, -3),
                   ),
                 ],
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -47,40 +74,78 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
                     onPressed: () {
                       Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(builder: (_) => Checklist()),
+                        MaterialPageRoute(builder: (_) => const HomePage()),
                         (route) => false,
                       );
                     },
-                    icon: Icon(Icons.add),
-                    label: Text('Nueva inspeccion'),
+                    icon: const Icon(Icons.home, color: Colors.white),
+                    label: const Text(
+                      'Inicio',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
+                      backgroundColor: primaryBlue,
                       foregroundColor: Colors.white,
-                      minimumSize: Size.fromHeight(50),
+                      minimumSize: const Size.fromHeight(52),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(16),
                       ),
+                      elevation: 6,
                     ),
                   ),
-                  SizedBox(height: 12),
+                  const SizedBox(height: 14),
                   ElevatedButton.icon(
                     onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => HistorialInspecciones(),
+                          builder: (_) => const HistorialInspecciones(),
                         ),
                       );
                     },
-                    icon: Icon(Icons.history),
-                    label: Text('Ver historial'),
+                    icon: const Icon(Icons.history, color: Colors.white),
+                    label: const Text(
+                      'Ver historial',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey[700],
+                      backgroundColor: orangeAccent,
                       foregroundColor: Colors.white,
-                      minimumSize: Size.fromHeight(50),
+                      minimumSize: const Size.fromHeight(52),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(16),
                       ),
+                      elevation: 6,
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  ElevatedButton.icon(
+                    onPressed: () async {
+                      try {
+                        final file = widget.pdfFile;
+                        await Share.shareXFiles(
+                          [XFile(file.path)],
+                          text: 'Aquí está el PDF de la inspección',
+                        );
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Error al compartir el PDF: $e')),
+                        );
+                      }
+                    },
+                    icon: const Icon(Icons.share, color: Colors.white),
+                    label: const Text(
+                      'Compartir PDF',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.teal,
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size.fromHeight(52),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      elevation: 6,
                     ),
                   ),
                 ],

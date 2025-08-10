@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:intl/intl.dart';
 
 class FirebaseService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -43,13 +44,17 @@ class FirebaseService {
     required String inspector,
     required String pdfUrl,
   }) async {
+      final DateFormat inputFormat = DateFormat('dd/MM/yyyy');
+  final DateTime fechaInspeccion = inputFormat.parse(fecha);
+  final DateTime proximaInspeccion = fechaInspeccion.add(const Duration(days: 30));
+
     await _db.collection('inspecciones').add({
-      'placa': placa,
-      'numeroInspeccion': numeroInspeccion,
-      'fecha': fecha,
-      'inspector': inspector,
-      'pdfUrl': pdfUrl,
-      'fechaRegistro': FieldValue.serverTimestamp(),
-    });
+          'placa': placa,
+    'numeroInspeccion': numeroInspeccion,
+    'fecha': Timestamp.fromDate(fechaInspeccion),
+    'inspector': inspector,
+    'pdfUrl': pdfUrl,
+    'proximaInspeccion': Timestamp.fromDate(proximaInspeccion),
+    'fechaRegistro': FieldValue.serverTimestamp(), });
   }
 }
