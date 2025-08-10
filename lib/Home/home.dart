@@ -6,6 +6,12 @@ import 'package:inspect/views/historial.dart';
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
+  // Colores de la identidad visual
+  final Color primaryBlue = const Color(0xFF004080); // Azul oscuro
+  final Color orangeAccent = const Color(0xFFF77F00); // Naranja
+  final Color yellowSoft = const Color(0xFFFFD54F); // Amarillo suave
+  final Color grayLight = const Color(0xFFF0F4F8); // Gris claro de fondo
+
   Widget buildCard(
     IconData icon,
     String text,
@@ -18,7 +24,7 @@ class HomePage extends StatelessWidget {
         width: 120,
         height: 120,
         decoration: BoxDecoration(
-          color: Colors.grey[100],
+          color: Colors.white, // fondo blanco para contraste
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
@@ -32,12 +38,14 @@ class HomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(icon, size: 40, color: color),
-
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text(
               text,
               textAlign: TextAlign.center,
-              style: TextStyle(fontWeight: FontWeight.w500),
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: primaryBlue, // texto en azul oscuro
+              ),
             ),
           ],
         ),
@@ -54,21 +62,35 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.white, elevation: 1),
+      backgroundColor: grayLight,
+      appBar: AppBar(
+        backgroundColor: primaryBlue,
+        elevation: 2,
+        centerTitle: true,
+        title: Text(
+          'Inicio',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+      ),
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
               child: Text(
                 "Bienvenido",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: primaryBlue,
+                ),
               ),
             ),
-
-            SizedBox(height: 84),
-
+            const SizedBox(height: 84),
             Center(
               child: Wrap(
                 alignment: WrapAlignment.center,
@@ -77,39 +99,46 @@ class HomePage extends StatelessWidget {
                 children: [
                   buildCard(
                     Icons.local_shipping,
-                    "Nueva Inspeccion",
-                    Colors.orange,
+                    "Nueva Inspección",
+                    orangeAccent,
                     () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Checklist()),
+                        MaterialPageRoute(
+                          builder: (context) => Checklist(),
+                        ),
                       );
                     },
                   ),
                   buildCard(
                     Icons.apartment,
                     "Recordatorios",
-                    Colors.blue,
+                    primaryBlue,
                     () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => RecordatoriosScreen()),
+                        MaterialPageRoute(
+                          builder: (context) => RecordatoriosScreen(),
+                        ),
                       );
                     },
                   ),
-
-                  buildCard(Icons.history, "Historial", Colors.red, () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => HistorialInspecciones(),
-                      ),
-                    );
-                  }),
+                  buildCard(
+                    Icons.history,
+                    "Historial",
+                    yellowSoft, // amarillo suave para diferenciar
+                    () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HistorialInspecciones(),
+                        ),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),
-
             const Spacer(),
           ],
         ),
