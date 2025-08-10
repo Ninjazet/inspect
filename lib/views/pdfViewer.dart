@@ -24,7 +24,7 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
     return Scaffold(
       backgroundColor: grayLight,
       appBar: AppBar(
-        title: const Text('Vista previa del PD'),
+        title: const Text('Vista previa del PDF'),
         centerTitle: true,
         backgroundColor: primaryBlue,
         elevation: 2,
