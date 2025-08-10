@@ -24,7 +24,7 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
     return Scaffold(
       backgroundColor: grayLight,
       appBar: AppBar(
-        title: const Text('Vista  de PDF'),
+        title: const Text('Vista Previa de PDF'),
         centerTitle: true,
         backgroundColor: primaryBlue,
         elevation: 2,
@@ -100,10 +100,10 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
                   // Botón ir a inicio
                   ElevatedButton.icon(
                     onPressed: () {
-                      Navigator.pushAndRemoveUntil(
+                      Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => HomePage()),
-                        (route) => false,
+                        MaterialPageRoute(
+                          builder: (_) => HomePage()),
                       );
                     },
                     icon: const Icon(Icons.home, color: Colors.white),
