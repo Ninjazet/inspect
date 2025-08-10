@@ -1,11 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:inspect/Home/home.dart';
-import 'package:inspect/checklist.dart';
 import 'package:inspect/views/historial.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:cross_file/cross_file.dart';
 
 class PdfViewerScreen extends StatefulWidget {
   final File pdfFile;
@@ -70,11 +68,41 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  // Botón para compartir el PDF
+                  ElevatedButton.icon(
+                    onPressed: () async {
+                      try {
+                        await Share.shareXFiles([XFile(widget.pdfFile.path)],
+                            text: 'Aquí está el PDF de la inspección');
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Error al compartir el PDF: $e')),
+                        );
+                      }
+                    },
+                    icon: const Icon(Icons.share, color: Colors.white),
+                    label: const Text(
+                      'Compartir PDF',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.teal,
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size.fromHeight(52),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      elevation: 6,
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+
+                  // Botón ir a inicio
                   ElevatedButton.icon(
                     onPressed: () {
                       Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(builder: (_) => const HomePage()),
+                        MaterialPageRoute(builder: (_) => HomePage()),
                         (route) => false,
                       );
                     },
@@ -94,6 +122,8 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
                     ),
                   ),
                   const SizedBox(height: 14),
+
+                  // Botón ver historial
                   ElevatedButton.icon(
                     onPressed: () {
                       Navigator.push(
@@ -110,36 +140,6 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: orangeAccent,
-                      foregroundColor: Colors.white,
-                      minimumSize: const Size.fromHeight(52),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      elevation: 6,
-                    ),
-                  ),
-                  const SizedBox(height: 14),
-                  ElevatedButton.icon(
-                    onPressed: () async {
-                      try {
-                        final file = widget.pdfFile;
-                        await Share.shareXFiles(
-                          [XFile(file.path)],
-                          text: 'Aquí está el PDF de la inspección',
-                        );
-                      } catch (e) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Error al compartir el PDF: $e')),
-                        );
-                      }
-                    },
-                    icon: const Icon(Icons.share, color: Colors.white),
-                    label: const Text(
-                      'Compartir PDF',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.teal,
                       foregroundColor: Colors.white,
                       minimumSize: const Size.fromHeight(52),
                       shape: RoundedRectangleBorder(
