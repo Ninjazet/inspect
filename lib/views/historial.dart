@@ -158,12 +158,49 @@ class _HistorialInspeccionesState extends State<HistorialInspecciones> {
                       final doc = inspeccionesFiltradas[index];
                       final data = doc.data() as Map<String, dynamic>;
 
-                      return Card(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16)),
-                        elevation: 4,
-                        margin: EdgeInsets.only(bottom: 12),
-                        shadowColor: orangeAccent.withOpacity(0.3),
+                      return Dismissible(
+  key: Key(doc.id),
+  direction: DismissDirection.endToStart, // deslizar solo hacia la izquierda
+  background: Container(
+    alignment: Alignment.centerRight,
+    padding: EdgeInsets.only(right: 20),
+    decoration: BoxDecoration(
+      color: Colors.red,
+      borderRadius: BorderRadius.circular(16),
+    ),
+    child: Icon(Icons.delete, color: Colors.white),
+  ),
+  confirmDismiss: (direction) async {
+    // Mostrar diálogo de confirmación
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('¿Estás seguro de eliminar?'),
+        content: const Text('La acción no se puede deshacer'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Eliminar'),
+          ),
+        ],
+      ),
+    );
+    return confirm == true;
+  },
+  onDismissed: (direction) {
+    _eliminarInspeccion(context, doc.id);
+  },
+  child: Card(
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(16),
+    ),
+    elevation: 4,
+    margin: EdgeInsets.only(bottom: 12),
+    shadowColor: orangeAccent.withOpacity(0.3),
                         child: ListTile(
                           contentPadding:
                               EdgeInsets.symmetric(horizontal: 20, vertical: 14),
@@ -243,6 +280,7 @@ class _HistorialInspeccionesState extends State<HistorialInspecciones> {
                             }
                           },
                         ),
+  )
                       );
                     },
                   );
