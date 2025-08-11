@@ -12,6 +12,48 @@ class _NotasPageState extends State<NotasPage> {
 
   final _notasCollection = FirebaseFirestore.instance.collection('notas');
 
+  @override
+  void initState() {
+    super.initState();
+    _checkNotasPendientes();
+  }
+
+  Future<void> _checkNotasPendientes() async {
+    final hoy = DateTime.now();
+    final hoySoloDia = DateTime(hoy.year, hoy.month, hoy.day);
+
+    final snapshot = await _notasCollection
+        .where('fecha', isNotEqualTo: null)
+        .get();
+
+    final notasPendientes = snapshot.docs.where((doc) {
+      final data = doc.data();
+      if (data['fecha'] == null) return false;
+      final fechaNota = DateTime.parse(data['fecha']);
+      final fechaSoloDia = DateTime(fechaNota.year, fechaNota.month, fechaNota.day);
+      return fechaSoloDia == hoySoloDia;
+    }).toList();
+
+    if (notasPendientes.isNotEmpty) {
+      final mensajes = notasPendientes.map((doc) => doc['texto']).join('\n• ');
+
+      // Mostrar diálogo con notas pendientes
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Text('Recordatorios para hoy'),
+          content: Text('• $mensajes'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Cerrar'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
   Future<void> _agregarNota() async {
     final texto = _textoController.text.trim();
     if (texto.isEmpty) return;
@@ -109,7 +151,9 @@ class _NotasPageState extends State<NotasPage> {
       ),
     );
   }
-} class Nota {
+}
+
+class Nota {
   String id;
   String texto;
   DateTime? fecha; // opcional, para futura alerta
