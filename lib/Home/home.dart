@@ -1,16 +1,60 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:inspect/checklist.dart';
 import 'package:inspect/views/Recordatorio.dart';
 import 'package:inspect/views/historial.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
-  // Colores de la identidad visual
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final Color primaryBlue = const Color(0xFF004080); // Azul oscuro
   final Color orangeAccent = const Color(0xFFF77F00); // Naranja
   final Color yellowSoft = const Color(0xFFFFD54F); // Amarillo suave
   final Color grayLight = const Color(0xFFF0F4F8); // Gris claro de fondo
+
+  final _notasCollection = FirebaseFirestore.instance.collection('notas');
+
+  @override
+  void initState() {
+    super.initState();
+    _checkNotasPendientes();
+  }
+
+  Future<void> _checkNotasPendientes() async {
+    final hoy = DateTime.now();
+    final hoySoloDia = DateTime(hoy.year, hoy.month, hoy.day);
+
+    final snapshot = await _notasCollection.where('fecha', isNotEqualTo: null).get();
+
+    final hayPendientes = snapshot.docs.any((doc) {
+      final data = doc.data();
+      if (data['fecha'] == null) return false;
+      final fechaNota = DateTime.parse(data['fecha']);
+      final fechaSoloDia = DateTime(fechaNota.year, fechaNota.month, fechaNota.day);
+      return fechaSoloDia == hoySoloDia;
+    });
+
+    if (hayPendientes && mounted) {
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Text('Recordatorios'),
+          content: Text('Hay recordatorios pendientes para hoy.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Cerrar'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
 
   Widget buildCard(
     IconData icon,
@@ -126,7 +170,7 @@ class HomePage extends StatelessWidget {
                   buildCard(
                     Icons.history,
                     "Historial",
-                    yellowSoft, 
+                    yellowSoft,
                     () {
                       Navigator.push(
                         context,
