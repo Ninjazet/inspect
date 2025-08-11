@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:inspect/checklistForm.dart';
-import 'package:inspect/firebase/firebase_service.dart';
 import 'package:inspect/service/pdfService.dart';
+import 'package:inspect/firebase/firebase_service.dart';
 import 'package:inspect/views/pdfViewer.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:inspect/service/inspeccionService.dart';
 
 class Checklist extends StatefulWidget {
   const Checklist({super.key});
@@ -16,8 +15,14 @@ class Checklist extends StatefulWidget {
 class _ChecklistState extends State<Checklist> {
   Map<String, String?> _respuestas = {};
   Map<String, String> _datosGenerales = {};
-  final _pdfService = PdfService();
-  final _firebaseService = FirebaseService();
+
+  final _inspeccionService = InspeccionService(
+    firebaseService: FirebaseService(),
+    pdfService: PdfService(),
+  );
+
+  final Color primaryBlue = const Color(0xFF5677FC);
+  final Color backgroundGray = const Color(0xFFF5F7FA);
 
   void _onFormChanged(Map<String, String?> data) {
     _respuestas = data;
@@ -30,100 +35,75 @@ class _ChecklistState extends State<Checklist> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Inspeccion de unidades')),
+      backgroundColor: backgroundGray,
+      appBar: AppBar(
+        title: const Text('Inspección de unidades'),
+        backgroundColor: primaryBlue,
+        elevation: 2,
+      ),
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           child: SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ChecklistForm(
                   onChanged: _onFormChanged,
                   onDatosGeneralesChanged: _onDatosGeneralesChanged,
                 ),
-                SizedBox(height: 20),
-                ElevatedButton.icon(
-                  onPressed: () async {
-                    final placa = _datosGenerales['placa'] ?? '';
-                    final numeroInspeccion =
-                        _datosGenerales['numeroInspeccion'] ?? '';
-                    final fecha = _datosGenerales['fecha'] ?? '';
-                    final inspector = _datosGenerales['inspector'] ?? '';
-
-                    if ([
-                      placa,
-                      numeroInspeccion,
-                      fecha,
-                      inspector,
-                    ].any((e) => e.isEmpty)) {
-                      showTopSnackBar(
-                        Overlay.of(context),
-                        CustomSnackBar.error(
-                          message: 'Completa todos los datos generales',
-                        ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: () async {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (_) =>
+                            const Center(child: CircularProgressIndicator()),
                       );
-
-                      return;
-                    }
-
-                    final respuestasLimpias = _respuestas.map(
-                      (k, v) => MapEntry(k, v ?? ''),
-                    );
-                    //generar pdf
-                    final pdfFile = await _pdfService.exportarChecklist(
-                      respuestasLimpias,
-                      _datosGenerales,
-                    );
-
-                    if (pdfFile == null) {
-                      showTopSnackBar(
-                        Overlay.of(context),
-                        CustomSnackBar.error(
-                          message: 'Error al generar el PDF',
-                        ),
+                      final inspeccionService = InspeccionService(
+                        firebaseService: FirebaseService(),
+                        pdfService: PdfService(),
                       );
-                      return;
-                    }
-                    //subir pdf
-                    final pdfUrl = await _firebaseService.subirPdfYObtenerUrl(
-                      pdfFile: pdfFile,
-                      placa: placa,
-                      fecha: fecha,
-                    );
-                    //guardar
-                    await _firebaseService.guardarInspeccionCompleta(
-                      placa: placa,
-                      numeroInspeccion: numeroInspeccion,
-                      fecha: fecha,
-                      inspector: inspector,
-                      pdfUrl: pdfUrl,
-                    );
+                      final pdfFile = await _inspeccionService
+                          .guardarInspeccion(
+                            context: context,
+                            datosGenerales: _datosGenerales,
+                            respuestas: _respuestas,
+                          );
 
-                    if (!mounted) return;
+                      Navigator.of(context).pop(); // cerrar loading
 
-                    showTopSnackBar(
-                      Overlay.of(context),
-                       CustomSnackBar.success(
-                        message: 'Inspección registrada con exito!',
+                      if (pdfFile != null && mounted) {
+                        setState(() {
+                          _respuestas.clear();
+                          _datosGenerales.clear();
+                        });
+
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => PdfViewerScreen(pdfFile: pdfFile),
+                          ),
+                        );
+                      }
+                    },
+                    icon: const Icon(Icons.save_alt, color: Colors.white),
+                    label: const Text(
+                      'Guardar',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
                       ),
-                    );
-
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PdfViewerScreen(pdfFile: pdfFile),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primaryBlue,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                    );
-                  },
-
-                  icon: Icon(Icons.save_alt),
-                  label: Text('Guardar', style: TextStyle(color: Colors.white)),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
-                      side: BorderSide(color: Colors.white, width: 2),
+                      elevation: 4,
                     ),
                   ),
                 ),

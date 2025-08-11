@@ -43,12 +43,13 @@ class _HomePageState extends State<HomePage> {
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
-          title: Text('Recordatorios'),
-          content: Text('Hay recordatorios pendientes para hoy.'),
+                    title: Text('Recordatorios', style: TextStyle(color: primaryBlue, fontWeight: FontWeight.bold)),
+
+          content: Text('Hay recordatorios pendientes para hoy.',style: TextStyle(color: primaryBlue)),
           actions: [
-            TextButton(
+             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('Cerrar'),
+              child: Text('Cerrar', style: TextStyle(color: orangeAccent)),
             ),
           ],
         ),

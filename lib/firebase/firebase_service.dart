@@ -1,25 +1,44 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:intl/intl.dart';
 
 class FirebaseService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
+  Future<int> obtenerNumeroInspeccion() async {
+  final contadorRef = _db.collection('config').doc('contadorInspecciones');
+
+  return _db.runTransaction((transaction) async {
+    final snapshot = await transaction.get(contadorRef);
+    int nuevoNumero;
+
+    if (!snapshot.exists) {
+      nuevoNumero = 1; // Si no existe, iniciamos en 1
+      transaction.set(contadorRef, {'valor': nuevoNumero});
+    } else {
+      nuevoNumero = snapshot['valor'] + 1;
+      transaction.update(contadorRef, {'valor': FieldValue.increment(1)});
+    }
+
+    return nuevoNumero;
+  });
+}
+
   Future<void> guardarInspeccionBasica({
     required String placa,
-    required String numeroInspeccion,
     required String fecha,
     required String inspector,
-     required String pdfUrl, 
+    required String pdfUrl,
   }) async {
+    final numero = await obtenerNumeroInspeccion();
+
     await _db.collection('inspecciones').add({
       'placa': placa,
-      'numeroInspeccion': numeroInspeccion,
+      'numeroInspeccion': numero.toString(),
       'fecha': fecha,
       'inspector': inspector,
-      'pdfUrl': pdfUrl, 
+      'pdfUrl': pdfUrl,
       'fechaRegistro': FieldValue.serverTimestamp(),
     });
   }
@@ -38,23 +57,19 @@ class FirebaseService {
   }
 
   Future<void> guardarInspeccionCompleta({
-    required String placa,
-    required String numeroInspeccion,
-    required String fecha,
-    required String inspector,
-    required String pdfUrl,
-  }) async {
-      final DateFormat inputFormat = DateFormat('dd/MM/yyyy');
-  final DateTime fechaInspeccion = inputFormat.parse(fecha);
-  final DateTime proximaInspeccion = fechaInspeccion.add(const Duration(days: 30));
-
-    await _db.collection('inspecciones').add({
-          'placa': placa,
+  required String placa,
+  required String fecha,
+  required String inspector,
+  required String pdfUrl,
+  required String numeroInspeccion, 
+}) async {
+  await _db.collection('inspecciones').add({
+    'placa': placa,
     'numeroInspeccion': numeroInspeccion,
-    'fecha': Timestamp.fromDate(fechaInspeccion),
+    'fecha': fecha,
     'inspector': inspector,
     'pdfUrl': pdfUrl,
-    'proximaInspeccion': Timestamp.fromDate(proximaInspeccion),
-    'fechaRegistro': FieldValue.serverTimestamp(), });
-  }
+    'fechaRegistro': FieldValue.serverTimestamp(),
+  });
+}
 }

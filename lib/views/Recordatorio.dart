@@ -57,18 +57,43 @@ class _NotasPageState extends State<NotasPage> {
     }
   }
 
-  Future<void> _agregarNota() async {
-    final texto = _textoController.text.trim();
-    if (texto.isEmpty) return;
+Future<void> _agregarNota() async {
+  final texto = _textoController.text.trim();
+  if (texto.isEmpty) return;
 
-    await _notasCollection.add({
-      'texto': texto,
-      'fecha': _fechaSeleccionada?.toIso8601String(),
-    });
-
-    _textoController.clear();
-    setState(() => _fechaSeleccionada = null);
+  if (_fechaSeleccionada == null) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        backgroundColor: grayLight,
+        title: Text(
+          'Fecha requerida',
+          style: TextStyle(color: primaryBlue, fontWeight: FontWeight.bold),
+        ),
+      
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(
+              'OK',
+              style: TextStyle(color: orangeAccent, fontWeight: FontWeight.w600),
+            ),
+          ),
+        ],
+      ),
+    );
+    return;
   }
+
+  await _notasCollection.add({
+    'texto': texto,
+    'fecha': _fechaSeleccionada!.toIso8601String(),
+  });
+
+  _textoController.clear();
+  setState(() => _fechaSeleccionada = null);
+}
+
 
   Future<void> _seleccionarFecha() async {
     final ahora = DateTime.now();
