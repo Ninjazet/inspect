@@ -1,8 +1,10 @@
-
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:inspect/Home/main_navigation.dart';
-import 'package:inspect/firebase/firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:get/get.dart';
+import 'package:inspect/views/login_screen.dart';
+
+import 'firebase/firebase_options.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -10,22 +12,23 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(const Inspect ());
+  runApp(const MyApp());
 }
 
-class Inspect extends StatelessWidget {
-  const Inspect({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Inspeccion Flota',
+    return GetMaterialApp(
+      title: 'Inspección Flota',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.red,
         useMaterial3: true,
       ),
-      home:  MainNavigation(),
+      home: const LoginScreen(),
     );
   }
 }
+
