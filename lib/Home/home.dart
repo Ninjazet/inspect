@@ -118,7 +118,7 @@ class HomePage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => RecordatoriosScreen(),
+                          builder: (context) => NotasPage(),
                         ),
                       );
                     },
@@ -126,7 +126,7 @@ class HomePage extends StatelessWidget {
                   buildCard(
                     Icons.history,
                     "Historial",
-                    yellowSoft, // amarillo suave para diferenciar
+                    yellowSoft, 
                     () {
                       Navigator.push(
                         context,

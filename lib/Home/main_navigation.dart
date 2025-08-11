@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:inspect/Home/home.dart';
 import 'package:inspect/Home/nav_controller.dart';
 import 'package:inspect/views/login_screen.dart';
@@ -18,44 +20,61 @@ class MainNavigation extends StatelessWidget {
 
   void _logout(BuildContext context) async {
     // Muestra el cuadro de diálogo de confirmación
+    final box = GetStorage();
+    //limpiar datos
+    void _clearLocalData() {
+      box.erase();
+    }
+
+    Future<void> _signOutFirebase() async {
+      await FirebaseAuth.instance.signOut();
+    }
+
     final bool? shouldLogout = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text(
-          'Cerrar sesión',
-          style: TextStyle(color: Color.fromARGB(255, 0, 71, 128)), // Título en azul
-        ),
-        content: const Text(
-          '¿Estás seguro de que deseas cerrar sesión?',
-          style: TextStyle(color: Color.fromARGB(255, 0, 71, 128)), // Contenido en azul
-        ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text(
-              'No',
-              style: TextStyle(color: Colors.blue), // Botón 'No' en azul
-            ),
+        return AlertDialog(
+          title: const Text(
+            'Cerrar sesión',
+            style: TextStyle(
+              color: Color.fromARGB(255, 0, 71, 128),
+            ), // Título en azul
           ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text(
-              'Sí',
-              style: TextStyle(color: Colors.blue), // Botón 'Sí' en azul
-            ),
+          content: const Text(
+            '¿Estás seguro de que deseas cerrar sesión?',
+            style: TextStyle(
+              color: Color.fromARGB(255, 0, 71, 128),
+            ), // Contenido en azul
           ),
-        ],
-      );
-    },
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text(
+                'No',
+                style: TextStyle(color: Colors.blue), // Botón 'No' en azul
+              ),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text(
+                'Sí',
+                style: TextStyle(color: Colors.blue), // Botón 'Sí' en azul
+              ),
+            ),
+          ],
+        );
+      },
     );
 
     // Si el usuario confirmó, procede con el cierre de sesión
     if (shouldLogout == true) {
-      // Muestra el splash de "Cerrando sesión"
+      await _signOutFirebase();
+      _clearLocalData();
+
       Navigator.of(context).pushAndRemoveUntil(
         PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) => const _LogoutSplash(),
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              const _LogoutSplash(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(opacity: animation, child: child);
           },
@@ -118,12 +137,13 @@ class _LogoutSplashState extends State<_LogoutSplash> {
   @override
   void initState() {
     super.initState();
+
     _navigateToLogin();
   }
 
   void _navigateToLogin() async {
     // Simula el tiempo de cierre de sesión
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 1));
 
     if (!mounted) return;
 
@@ -143,10 +163,7 @@ class _LogoutSplashState extends State<_LogoutSplash> {
           children: [
             CircularProgressIndicator(),
             SizedBox(height: 20),
-            Text(
-              'Cerrando sesión...',
-              style: TextStyle(fontSize: 18),
-            ),
+            Text('Cerrando sesión...', style: TextStyle(fontSize: 18)),
           ],
         ),
       ),
