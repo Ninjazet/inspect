@@ -1,147 +1,133 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class RecordatoriosScreen extends StatelessWidget {
-  const RecordatoriosScreen({super.key});
+class NotasPage extends StatefulWidget {
+  @override
+  _NotasPageState createState() => _NotasPageState();
+}
+
+class _NotasPageState extends State<NotasPage> {
+  final _textoController = TextEditingController();
+  DateTime? _fechaSeleccionada;
+
+  final _notasCollection = FirebaseFirestore.instance.collection('notas');
+
+  Future<void> _agregarNota() async {
+    final texto = _textoController.text.trim();
+    if (texto.isEmpty) return;
+
+    await _notasCollection.add({
+      'texto': texto,
+      'fecha': _fechaSeleccionada?.toIso8601String(),
+    });
+
+    _textoController.clear();
+    setState(() => _fechaSeleccionada = null);
+  }
+
+  Future<void> _seleccionarFecha() async {
+    final ahora = DateTime.now();
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _fechaSeleccionada ?? ahora,
+      firstDate: ahora.subtract(Duration(days: 365)),
+      lastDate: ahora.add(Duration(days: 365 * 5)),
+    );
+    if (picked != null) {
+      setState(() {
+        _fechaSeleccionada = picked;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final DateFormat formatter = DateFormat('dd/MM/yyyy');
-
-    Color backgroundColor(int diasRestantes) {
-      if (diasRestantes < 0) return Colors.red.shade100;
-      if (diasRestantes <= 5) return Colors.orange.shade100;
-      return Colors.green.shade100;
-    }
-
-    Icon estadoIcon(int diasRestantes) {
-      if (diasRestantes < 0) return const Icon(Icons.error, color: Colors.red);
-      if (diasRestantes <= 5) return const Icon(Icons.warning_amber_rounded, color: Colors.orange);
-      return const Icon(Icons.check_circle, color: Colors.green);
-    }
-
-    String estadoTexto(int diasRestantes) {
-      if (diasRestantes < 0) return 'Vencido';
-      if (diasRestantes <= 5) return 'Próximo a vencer';
-      return 'En día';
-    }
-
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Recordatorios"),
-        backgroundColor: Colors.blue,
-      ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('inspecciones')
-            .orderBy('proximaInspeccion')
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          final inspecciones = snapshot.data!.docs;
-
-          if (inspecciones.isEmpty) {
-            return const Center(child: Text("No hay recordatorios"));
-          }
-
-          return ListView.builder(
-            padding: const EdgeInsets.all(12),
-            itemCount: inspecciones.length,
-            itemBuilder: (context, index) {
-              final data = inspecciones[index].data() as Map<String, dynamic>;
-              final placa = data['placa'] ?? '';
-
-              final Timestamp? fechaUltimaTimestamp = data['fecha'];
-              final Timestamp? fechaProximaTimestamp = data['proximaInspeccion'];
-
-              if (fechaUltimaTimestamp == null || fechaProximaTimestamp == null) {
-                return const SizedBox();
-              }
-
-              final DateTime fechaUltima = fechaUltimaTimestamp.toDate();
-              final DateTime fechaProxima = fechaProximaTimestamp.toDate();
-
-              final diasRestantes = fechaProxima.difference(DateTime.now()).inDays;
-
-              return Card(
-                elevation: 3,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
+      appBar: AppBar(title: Text('Recordatorios simples')),
+      body: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(12),
+            child: TextField(
+              controller: _textoController,
+              decoration: InputDecoration(
+                labelText: 'Escribe tu nota',
+                suffixIcon: IconButton(
+                  icon: Icon(Icons.calendar_today),
+                  onPressed: _seleccionarFecha,
                 ),
-                color: backgroundColor(diasRestantes),
-                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-                  child: Row(
-                    children: [
-                      estadoIcon(diasRestantes),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Placa: $placa',
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              "Última inspección: ${formatter.format(fechaUltima)}",
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey[700],
-                              ),
-                            ),
-                            Text(
-                              "Próxima inspección: ${formatter.format(fechaProxima)}",
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey[700],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            estadoTexto(diasRestantes),
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: diasRestantes < 0
-                                  ? Colors.red
-                                  : (diasRestantes <= 5 ? Colors.orange : Colors.green),
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            diasRestantes < 0
-                                ? '${-diasRestantes} días vencido'
-                                : '$diasRestantes días restantes',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+              ),
+            ),
+          ),
+          if (_fechaSeleccionada != null)
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              child: Row(
+                children: [
+                  Text('Fecha: ${_fechaSeleccionada!.toLocal().toString().split(' ')[0]}'),
+                  IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: () => setState(() => _fechaSeleccionada = null),
                   ),
-                ),
-              );
-            },
-          );
-        },
+                ],
+              ),
+            ),
+          ElevatedButton(
+            onPressed: _agregarNota,
+            child: Text('Guardar Nota'),
+          ),
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: _notasCollection.orderBy('fecha', descending: false).snapshots(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
+
+                final docs = snapshot.data!.docs;
+                if (docs.isEmpty) return Center(child: Text('No hay notas'));
+
+                return ListView.builder(
+                  itemCount: docs.length,
+                  itemBuilder: (_, i) {
+                    final doc = docs[i];
+                    final data = doc.data() as Map<String, dynamic>;
+                    final fecha = data['fecha'] != null ? DateTime.parse(data['fecha']) : null;
+
+                    return ListTile(
+                      title: Text(data['texto']),
+                      subtitle: fecha != null ? Text('Para: ${fecha.toLocal().toString().split(' ')[0]}') : null,
+                      trailing: IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () => _notasCollection.doc(doc.id).delete(),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
       ),
+    );
+  }
+} class Nota {
+  String id;
+  String texto;
+  DateTime? fecha; // opcional, para futura alerta
+
+  Nota({required this.id, required this.texto, this.fecha});
+
+  Map<String, dynamic> toMap() {
+    return {
+      'texto': texto,
+      'fecha': fecha?.toIso8601String(),
+    };
+  }
+
+  factory Nota.fromMap(String id, Map<String, dynamic> map) {
+    return Nota(
+      id: id,
+      texto: map['texto'],
+      fecha: map['fecha'] != null ? DateTime.parse(map['fecha']) : null,
     );
   }
 }
