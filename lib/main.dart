@@ -7,34 +7,27 @@ import 'package:inspect/views/login_screen.dart';
 
 import 'firebase/firebase_options.dart';
 
-
 void main() async {
   await GetStorage.init();
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-   MyApp({super.key});
+  MyApp({super.key});
 
- final storage = GetStorage();
+  final storage = GetStorage();
   @override
   Widget build(BuildContext context) {
-        final hayData = storage.read("logueado") ?? false;
+    final hayData = storage.read("logueado") ?? false;
 
     return GetMaterialApp(
       title: 'Inspección Flota',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.red,
-        useMaterial3: true,
-      ),
+      theme: ThemeData(primarySwatch: Colors.red, useMaterial3: true),
       home: hayData ? MainNavigation() : LoginScreen(),
     );
   }
 }
-

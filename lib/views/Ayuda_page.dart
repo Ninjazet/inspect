@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'report_issue_page.dart';
 
 class AyudaPage extends StatelessWidget {
   const AyudaPage({super.key});
 
   static const Color _primary = Color(0xFF004780);
   static const Color _bg = Color(0xFFF2F6FA);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,7 +73,14 @@ class AyudaPage extends StatelessWidget {
                   icon: Icons.bug_report_outlined,
                   iconColor: Colors.amber,
                   title: 'Reportar problema',
-                  onTap: () => _reportIssue(context),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const ReportIssuePage(),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
@@ -111,35 +120,9 @@ class AyudaPage extends StatelessWidget {
       ),
     );
   }
-
-  static void _reportIssue(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('Reportar problema'),
-        content: const Text('Describe brevemente el error que presentas.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancelar'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _openUrl(
-                Uri.parse(
-                  'mailto:oemaldonado@uth.hn?subject=Bug%20Inspect&body=Describa%20el%20problema%3A%0A%0A',
-                ),
-              );
-            },
-            child: const Text('Enviar'),
-          ),
-        ],
-      ),
-    );
-  }
 }
 
+// ---- Widgets reutilizables ----
 class _ActionCard extends StatelessWidget {
   final IconData icon;
   final Color iconColor;
