@@ -4,9 +4,8 @@ import 'package:url_launcher/url_launcher.dart';
 class AyudaPage extends StatelessWidget {
   const AyudaPage({super.key});
 
-  static const Color _primary = Color(0xFF004780); // azul del header
-  static const Color _bg = Color(0xFFF2F6FA); // gris del fondo
-
+  static const Color _primary = Color(0xFF004780);
+  static const Color _bg = Color(0xFFF2F6FA);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +33,6 @@ class AyudaPage extends StatelessWidget {
             ),
             const SizedBox(height: 24),
 
-            // Grid de tarjetas (mismo look que Inicio)
             GridView.count(
               crossAxisCount: 2,
               shrinkWrap: true,
@@ -83,7 +81,6 @@ class AyudaPage extends StatelessWidget {
     );
   }
 
-  // ---- Helpers ----
   static Future<void> _openUrl(Uri uri) async {
     await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
@@ -143,7 +140,6 @@ class AyudaPage extends StatelessWidget {
   }
 }
 
-// ---- Widgets reutilizables (mismo estilo de tarjeta) ----
 class _ActionCard extends StatelessWidget {
   final IconData icon;
   final Color iconColor;
