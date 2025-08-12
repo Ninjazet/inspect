@@ -49,17 +49,11 @@ class MainNavigation extends StatelessWidget {
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text(
-                'No',
-                style: TextStyle(color: Colors.blue), // Botón 'No' en azul
-              ),
+              child: const Text('No', style: TextStyle(color: Colors.blue)),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text(
-                'Sí',
-                style: TextStyle(color: Colors.blue), // Botón 'Sí' en azul
-              ),
+              child: const Text('Sí', style: TextStyle(color: Colors.blue)),
             ),
           ],
         );
