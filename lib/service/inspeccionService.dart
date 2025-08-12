@@ -19,6 +19,7 @@ class InspeccionService {
     required BuildContext context,
     required Map<String, String?> respuestas,
     required Map<String, String> datosGenerales,
+    required Map<String, String> informacionUnidad,
   }) async {
     File? pdfFile;
 
@@ -35,6 +36,7 @@ class InspeccionService {
       // 1️⃣ Obtener número de inspección primero
       final numeroInspeccion = await firebaseService.obtenerNumeroInspeccion();
       final datosConNumero = Map<String, String>.from(datosGenerales);
+      datosConNumero.addAll(informacionUnidad);
       datosConNumero['numeroInspeccion'] = numeroInspeccion.toString();
 
       // 2️⃣ Limpiar respuestas nulas
@@ -45,6 +47,8 @@ class InspeccionService {
       pdfFile = await pdfService.exportarChecklist(
         respuestasLimpias,
         datosConNumero,
+        informacionUnidad
+        
       );
 
       if (pdfFile == null) {
@@ -73,9 +77,15 @@ class InspeccionService {
 
       // 5️⃣ Guardar datos en Firestore
       await firebaseService.guardarInspeccionCompleta(
-        placa: datosConNumero['placa'] ?? '',
+        conductor: datosConNumero['conductor'] ?? '',
         fecha: datosConNumero['fecha'] ?? '',
         inspector: datosConNumero['inspector'] ?? '',
+        placa: informacionUnidad['placa'] ?? '',
+        tipoTransporte: informacionUnidad['tipoTransporte' ] ?? '',
+        marca: informacionUnidad['marca']  ?? '',
+        modelo: informacionUnidad['modelo']  ?? '',
+        color: informacionUnidad['color']  ?? '',
+        vin: informacionUnidad['vin']  ?? '',
         pdfUrl: pdfUrl,
         numeroInspeccion: numeroInspeccion.toString(),
       );

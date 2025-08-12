@@ -26,6 +26,12 @@ class FirebaseService {
 }
 
   Future<void> guardarInspeccionBasica({
+    required String conductor,
+    required String tipoTransporte,
+    required String marca,
+    required String modelo,
+    required String color,
+    required String vin,
     required String placa,
     required String fecha,
     required String inspector,
@@ -38,6 +44,12 @@ class FirebaseService {
       'numeroInspeccion': numero.toString(),
       'fecha': fecha,
       'inspector': inspector,
+      'conductor': conductor,
+      'tipoTransporte': tipoTransporte,
+      'marca': marca,
+      'modelo': modelo,
+      'color': color,
+      'vin': vin,
       'pdfUrl': pdfUrl,
       'fechaRegistro': FieldValue.serverTimestamp(),
     });
@@ -60,6 +72,12 @@ class FirebaseService {
   required String placa,
   required String fecha,
   required String inspector,
+  required String conductor,
+  required String tipoTransporte,
+  required String marca,
+  required String modelo,
+  required String color,
+  required String vin,
   required String pdfUrl,
   required String numeroInspeccion, 
 }) async {
@@ -68,6 +86,12 @@ class FirebaseService {
     'numeroInspeccion': numeroInspeccion,
     'fecha': fecha,
     'inspector': inspector,
+    'conductor': conductor,
+    'tipoTransporte': tipoTransporte,
+    'marca': marca,
+    'modelo': modelo,
+    'color': color,
+    'vin': vin,
     'pdfUrl': pdfUrl,
     'fechaRegistro': FieldValue.serverTimestamp(),
   });

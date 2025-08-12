@@ -15,6 +15,7 @@ class Checklist extends StatefulWidget {
 class _ChecklistState extends State<Checklist> {
   Map<String, String?> _respuestas = {};
   Map<String, String> _datosGenerales = {};
+  Map<String, String> _informacionUnidad = {};
 
   final _inspeccionService = InspeccionService(
     firebaseService: FirebaseService(),
@@ -30,6 +31,10 @@ class _ChecklistState extends State<Checklist> {
 
   void _onDatosGeneralesChanged(Map<String, String> generales) {
     _datosGenerales = generales;
+  }
+
+  void _ondInformacionUnidadChanged(Map<String, String> informacion){
+    _informacionUnidad = informacion;
   }
 
   @override
@@ -50,6 +55,7 @@ class _ChecklistState extends State<Checklist> {
                 ChecklistForm(
                   onChanged: _onFormChanged,
                   onDatosGeneralesChanged: _onDatosGeneralesChanged,
+                  onInformacionUnidad: _ondInformacionUnidadChanged,
                 ),
                 const SizedBox(height: 20),
                 SizedBox(
@@ -70,6 +76,7 @@ class _ChecklistState extends State<Checklist> {
                           .guardarInspeccion(
                             context: context,
                             datosGenerales: _datosGenerales,
+                            informacionUnidad: _informacionUnidad,
                             respuestas: _respuestas,
                           );
 
