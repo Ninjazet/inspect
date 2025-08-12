@@ -122,7 +122,6 @@ class AyudaPage extends StatelessWidget {
   }
 }
 
-// ---- Widgets reutilizables ----
 class _ActionCard extends StatelessWidget {
   final IconData icon;
   final Color iconColor;
