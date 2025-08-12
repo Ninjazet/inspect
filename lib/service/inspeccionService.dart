@@ -32,16 +32,16 @@ class InspeccionService {
     );
 
     try {
-      // 1️⃣ Obtener número de inspección primero
+      // Obtener número de inspección primero
       final numeroInspeccion = await firebaseService.obtenerNumeroInspeccion();
       final datosConNumero = Map<String, String>.from(datosGenerales);
       datosConNumero['numeroInspeccion'] = numeroInspeccion.toString();
 
-      // 2️⃣ Limpiar respuestas nulas
+      //  Limpiar respuestas nulas
       final respuestasLimpias =
           respuestas.map((k, v) => MapEntry(k, v ?? ''));
 
-      // 3️⃣ Generar PDF
+      // Generar PDF
       pdfFile = await pdfService.exportarChecklist(
         respuestasLimpias,
         datosConNumero,
@@ -64,14 +64,14 @@ class InspeccionService {
         return null;
       }
 
-      // 4️⃣ Subir PDF y obtener URL
+      // Subir PDF y obtener URL
       final pdfUrl = await firebaseService.subirPdfYObtenerUrl(
         pdfFile: pdfFile,
         placa: datosConNumero['placa'] ?? '',
         fecha: datosConNumero['fecha'] ?? '',
       );
 
-      // 5️⃣ Guardar datos en Firestore
+      // Guardar datos en Firestore
       await firebaseService.guardarInspeccionCompleta(
         placa: datosConNumero['placa'] ?? '',
         fecha: datosConNumero['fecha'] ?? '',
@@ -80,7 +80,7 @@ class InspeccionService {
         numeroInspeccion: numeroInspeccion.toString(),
       );
 
-      // 6️⃣ Éxito
+      
       Navigator.pop(context); // cerrar modal
       showTopSnackBar(
         Overlay.of(context),
@@ -90,8 +90,8 @@ class InspeccionService {
           textStyle: const TextStyle(
             color: Colors.green,
             fontWeight: FontWeight.bold,
+            fontSize: 16,
           ),
-          icon: const Icon(Icons.check_circle_outline, color: Colors.green),
         ),
       );
 

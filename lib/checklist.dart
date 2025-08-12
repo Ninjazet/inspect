@@ -4,6 +4,8 @@ import 'package:inspect/service/pdfService.dart';
 import 'package:inspect/firebase/firebase_service.dart';
 import 'package:inspect/views/pdfViewer.dart';
 import 'package:inspect/service/inspeccionService.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class Checklist extends StatefulWidget {
   const Checklist({super.key});
@@ -23,6 +25,7 @@ class _ChecklistState extends State<Checklist> {
 
   final Color primaryBlue = const Color(0xFF5677FC);
   final Color backgroundGray = const Color(0xFFF5F7FA);
+  final Color orangeAccent = const Color(0xFFFF9800);
 
   void _onFormChanged(Map<String, String?> data) {
     _respuestas = data;
@@ -56,24 +59,39 @@ class _ChecklistState extends State<Checklist> {
                   width: double.infinity,
                   child: ElevatedButton.icon(
                     onPressed: () async {
+                      final placa = _datosGenerales['placa'] ?? '';
+                      final fecha = _datosGenerales['fecha'] ?? '';
+                      final inspector = _datosGenerales['inspector'] ?? '';
+
+                      if ([placa, fecha, inspector].any((e) => e.isEmpty)) {
+                        showTopSnackBar(
+                          Overlay.of(context),
+                          CustomSnackBar.error(
+                            backgroundColor: orangeAccent,
+                            message: 'Completa todos los datos generales',
+                            textStyle: TextStyle(
+                              color: primaryBlue,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        );
+                        return;
+                      }
+
                       showDialog(
                         context: context,
                         barrierDismissible: false,
                         builder: (_) =>
                             const Center(child: CircularProgressIndicator()),
                       );
-                      final inspeccionService = InspeccionService(
-                        firebaseService: FirebaseService(),
-                        pdfService: PdfService(),
-                      );
-                      final pdfFile = await _inspeccionService
-                          .guardarInspeccion(
-                            context: context,
-                            datosGenerales: _datosGenerales,
-                            respuestas: _respuestas,
-                          );
 
-                      Navigator.of(context).pop(); // cerrar loading
+                      final pdfFile = await _inspeccionService.guardarInspeccion(
+                        context: context,
+                        datosGenerales: _datosGenerales,
+                        respuestas: _respuestas,
+                      );
+
+                      Navigator.of(context).pop(); // Cerrar loading
 
                       if (pdfFile != null && mounted) {
                         setState(() {
