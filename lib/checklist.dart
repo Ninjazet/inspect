@@ -86,6 +86,7 @@ class _ChecklistState extends State<Checklist> {
                         setState(() {
                           _respuestas.clear();
                           _datosGenerales.clear();
+                          _informacionUnidad.clear();
                         });
 
                         Navigator.pushReplacement(
