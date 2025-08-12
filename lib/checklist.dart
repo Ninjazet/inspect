@@ -33,7 +33,7 @@ class _ChecklistState extends State<Checklist> {
     _datosGenerales = generales;
   }
 
-  void _ondInformacionUnidadChanged(Map<String, String> informacion){
+  void _onInformacionUnidadChanged(Map<String, String> informacion){
     _informacionUnidad = informacion;
   }
 
@@ -55,7 +55,7 @@ class _ChecklistState extends State<Checklist> {
                 ChecklistForm(
                   onChanged: _onFormChanged,
                   onDatosGeneralesChanged: _onDatosGeneralesChanged,
-                  onInformacionUnidad: _ondInformacionUnidadChanged,
+                  onInformacionUnidad: _onInformacionUnidadChanged,
                 ),
                 const SizedBox(height: 20),
                 SizedBox(
