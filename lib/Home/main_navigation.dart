@@ -10,13 +10,17 @@ import '../views/perfil_page.dart';
 import '../views/Ayuda_page.dart';
 
 class MainNavigation extends StatelessWidget {
-  const MainNavigation({super.key});
+  const MainNavigation({super.key, required this.userEmail, required this.userName});
 
-  static final List<Widget> _pages = [
-    const HomePage(),
-    const PerfilPage(),
-    const AyudaPage(),
-  ];
+  final String userEmail;
+  final String userName;
+
+  List<Widget> get _pages => [
+        HomePage(userName: userName,
+        userEmail: userEmail,),
+        PerfilPage(userEmail: userEmail, userName: userName),
+        const AyudaPage(),
+      ];
 
   void _logout(BuildContext context) async {
     // Muestra el cuadro de diálogo de confirmación

@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:inspect/Home/home.dart';
+import 'package:inspect/Home/main_navigation.dart';
 import 'package:inspect/views/historial.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:share_plus/share_plus.dart';
@@ -8,7 +8,10 @@ import 'package:share_plus/share_plus.dart';
 class PdfViewerScreen extends StatefulWidget {
   final File pdfFile;
 
-  const PdfViewerScreen({super.key, required this.pdfFile});
+  const PdfViewerScreen({super.key, required this.pdfFile, required this.userName, required this.userEmail});
+
+  final String userName;
+  final String userEmail;
 
   @override
   State<PdfViewerScreen> createState() => _PdfViewerScreenState();
@@ -103,7 +106,9 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => HomePage()),
+                          builder: (_) => MainNavigation(
+                            userName: widget.userName,
+                            userEmail: widget.userEmail,)),
                       );
                     },
                     icon: const Icon(Icons.home, color: Colors.white),

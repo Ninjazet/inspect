@@ -5,7 +5,10 @@ import 'package:inspect/views/Recordatorio.dart';
 import 'package:inspect/views/historial.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({super.key, required this.userName, required this.userEmail});
+
+  final String userName;
+  final String userEmail;
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -127,7 +130,7 @@ class _HomePageState extends State<HomePage> {
           children: [
             Center(
               child: Text(
-                "Bienvenido",
+                "Bienvenido ${widget.userName}",
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -150,7 +153,9 @@ class _HomePageState extends State<HomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Checklist(),
+                          builder: (context) => Checklist(
+                            userName: widget.userName,
+                            userEmail: widget.userEmail,),
                         ),
                       );
                     },

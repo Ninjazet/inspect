@@ -6,7 +6,10 @@ import 'package:inspect/views/pdfViewer.dart';
 import 'package:inspect/service/inspeccionService.dart';
 
 class Checklist extends StatefulWidget {
-  const Checklist({super.key});
+  const Checklist({super.key, required this.userName, required this.userEmail});
+
+  final String userName;
+  final String userEmail;
 
   @override
   State<Checklist> createState() => _ChecklistState();
@@ -56,6 +59,7 @@ class _ChecklistState extends State<Checklist> {
                   onChanged: _onFormChanged,
                   onDatosGeneralesChanged: _onDatosGeneralesChanged,
                   onInformacionUnidad: _onInformacionUnidadChanged,
+                  userName: widget.userName,
                 ),
                 const SizedBox(height: 20),
                 SizedBox(
@@ -92,7 +96,9 @@ class _ChecklistState extends State<Checklist> {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => PdfViewerScreen(pdfFile: pdfFile),
+                            builder: (_) => PdfViewerScreen(pdfFile: pdfFile,
+                            userName: widget.userName,
+                            userEmail: widget.userEmail,),
                           ),
                         );
                       }

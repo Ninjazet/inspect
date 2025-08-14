@@ -7,12 +7,14 @@ class ChecklistForm extends StatefulWidget {
   final void Function(Map<String, String>) onDatosGeneralesChanged;
   final void Function(Map<String, String>) onInformacionUnidad;
   final String? numeroInspeccion;
+  final String userName;
 
   const ChecklistForm({
     super.key,
     required this.onChanged,
     required this.onDatosGeneralesChanged,
     required this.onInformacionUnidad,
+    required this.userName,
     this.numeroInspeccion,
   });
 
@@ -24,9 +26,9 @@ class _ChecklistFormState extends State<ChecklistForm> {
   final Map<String, String?> _respuestas = {};
 
   final _formKey = GlobalKey<FormState>();
+  
 
   // DATOS GENERALES
-  final _inspectorController = TextEditingController();
   final _conductorController = TextEditingController();
   final _fechaController = TextEditingController();
 
@@ -43,7 +45,7 @@ class _ChecklistFormState extends State<ChecklistForm> {
   @override
   void initState() {
     super.initState();
-
+    
     // Fecha por defecto
     final hoy = DateTime.now();
     final fechaFormateada =
@@ -167,7 +169,8 @@ class _ChecklistFormState extends State<ChecklistForm> {
                   vertical: 4,
                 ),
                 child: TextFormField(
-                  controller: _inspectorController,
+                  initialValue: widget.userName,
+                   readOnly: true,
                   decoration: _inputDecoration(
                     label: 'Inspector',
                     icon: Icons.person,
@@ -384,7 +387,7 @@ class _ChecklistFormState extends State<ChecklistForm> {
 
   Map<String, String> obtenerDatosGenerales() {
     return {
-      'inspector': _inspectorController.text,
+      'inspector': widget.userName,
       'conductor': _conductorController.text,
       'fecha': _fechaController.text,
     };
@@ -403,7 +406,6 @@ class _ChecklistFormState extends State<ChecklistForm> {
 
   @override
   void dispose() {
-    _inspectorController.dispose();
     _conductorController.dispose();
     _fechaController.dispose();
     _placaController.dispose();

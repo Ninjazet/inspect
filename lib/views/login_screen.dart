@@ -6,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({super.key,});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -42,12 +42,14 @@ class _LoginScreenState extends State<LoginScreen> {
       // Si llega aquí, el login fue exitoso
       final user = userCredential.user;
       if (user != null) {
+        String userName = user.displayName ?? 'Usuario';
         // Guardar datos en GetStorage
         storage.write('logueado', true);
         storage.write('usuario', user.email);
+        storage.write('nombre', userName);
 
         // Redireccionar
-        Get.offAll(MainNavigation(), transition: Transition.rightToLeft);
+        Get.offAll(MainNavigation(userEmail: user.email!, userName: userName), transition: Transition.rightToLeft);
       }
     } on FirebaseAuthException catch (e) {
       String errorMessage;

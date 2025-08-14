@@ -22,12 +22,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hayData = storage.read("logueado") ?? false;
+    final userEmail = storage.read("userEmail") ?? '';
+    final userName = storage.read("userName") ?? '';
 
     return GetMaterialApp(
       title: 'Inspección Flota',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.red, useMaterial3: true),
-      home: hayData ? MainNavigation() : LoginScreen(),
+      home: hayData ? MainNavigation(
+        userEmail: userEmail,
+        userName: userName,
+      ) : LoginScreen(),
     );
   }
 }
