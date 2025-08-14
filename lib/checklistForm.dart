@@ -19,38 +19,67 @@ class ChecklistForm extends StatefulWidget {
   });
 
   @override
-  State<ChecklistForm> createState() => _ChecklistFormState();
+  State<ChecklistForm> createState() => ChecklistFormState();
 }
 
-class _ChecklistFormState extends State<ChecklistForm> {
+class ChecklistFormState extends State<ChecklistForm> {
   final Map<String, String?> _respuestas = {};
-
   final _formKey = GlobalKey<FormState>();
-  
 
   // DATOS GENERALES
   final _conductorController = TextEditingController();
   final _fechaController = TextEditingController();
 
-  // INFORMACION DE LA UNIDAD
+  // INFORMACIÓN DE LA UNIDAD
   final _placaController = TextEditingController();
   final _modeloController = TextEditingController();
   final _colorController = TextEditingController();
   final _vinController = TextEditingController();
 
-  //Variables que estan en los Dropdown button
   String _tipoTransporte = 'Cabezal';
   String _marca = 'INTERNATIONAL';
 
   @override
   void initState() {
     super.initState();
-    
-    // Fecha por defecto
     final hoy = DateTime.now();
-    final fechaFormateada =
+    _fechaController.text =
         '${hoy.day.toString().padLeft(2, '0')}/${hoy.month.toString().padLeft(2, '0')}/${hoy.year}';
-    _fechaController.text = fechaFormateada;
+  }
+
+  String? _campoObligatorio(String? valor) {
+    if (valor == null || valor.trim().isEmpty) {
+      return 'Campo obligatorio';
+    }
+    return null;
+  }
+
+  bool _validarPreguntas(List<String> claves) {
+    for (var clave in claves) {
+      if (_respuestas[clave] == null) return false;
+    }
+    return true;
+  }
+
+  bool validarFormulario() {
+    if (!_formKey.currentState!.validate()) {
+      return false;
+    }
+    if (!_validarPreguntas(sistemaElectricoKeys) ||
+        !_validarPreguntas(parteExteriorKeys) ||
+        !_validarPreguntas(sistemaFrenosKeys) ||
+        !_validarPreguntas(sistemaMecanicoKeys) ||
+        !_validarPreguntas(sistemaLlantasKeys) ||
+        !_validarPreguntas(parteInteriorKeys) ||
+        !_validarPreguntas(documentosKeys)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Responde todas las preguntas del checklist'),
+        ),
+      );
+      return false;
+    }
+    return true;
   }
 
   InputDecoration _inputDecoration({
@@ -95,7 +124,7 @@ class _ChecklistFormState extends State<ChecklistForm> {
 
   Widget _buildSeccion(String titulo, List<String> claves) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 8),
+      margin: const EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -103,24 +132,27 @@ class _ChecklistFormState extends State<ChecklistForm> {
           BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 2)),
         ],
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Theme(
-          data: Theme.of(context).copyWith(
-            dividerColor: Colors.transparent,
-            splashColor: Colors.transparent,
-          ),
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          dividerColor: Colors.transparent,
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
           child: ExpansionTile(
-            tilePadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            childrenPadding: EdgeInsets.only(bottom: 12),
+            tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            childrenPadding: const EdgeInsets.only(bottom: 12),
             title: Text(
               titulo,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
+            backgroundColor: Colors.white,
+            collapsedBackgroundColor: Colors.white,
             children: claves
                 .map(
                   (clave) => Padding(
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: 16.0,
                       vertical: 4,
                     ),
@@ -144,66 +176,54 @@ class _ChecklistFormState extends State<ChecklistForm> {
           BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 2)),
         ],
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Theme(
-          data: Theme.of(context).copyWith(
-            dividerColor: Colors.transparent,
-            splashColor: Colors.transparent,
-          ),
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          dividerColor: Colors.transparent,
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
           child: ExpansionTile(
             initiallyExpanded: true,
-            tilePadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 8,
-            ),
+            tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             childrenPadding: const EdgeInsets.only(bottom: 12),
             title: const Text(
               'DATOS GENERALES',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
+            backgroundColor: Colors.white,
+            collapsedBackgroundColor: Colors.white,
             children: [
+              // Inspector
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 4,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: TextFormField(
                   initialValue: widget.userName,
-                   readOnly: true,
+                  readOnly: true,
                   decoration: _inputDecoration(
                     label: 'Inspector',
                     icon: Icons.person,
                   ),
-                  validator: (value) =>
-                      value!.isEmpty ? 'Campo obligatorio' : null,
-                  onChanged: (_) =>
-                      widget.onDatosGeneralesChanged(obtenerDatosGenerales()),
                 ),
               ),
-
+              // Conductor
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 4,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: TextFormField(
                   controller: _conductorController,
                   decoration: _inputDecoration(
                     label: 'Conductor',
                     icon: Icons.person_3,
                   ),
-                  validator: (value) =>
-                      value!.isEmpty ? 'Campo obligatorio' : null,
+                  validator: _campoObligatorio,
                   onChanged: (_) =>
                       widget.onDatosGeneralesChanged(obtenerDatosGenerales()),
                 ),
               ),
+              // Fecha
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 4,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: TextFormField(
                   controller: _fechaController,
                   readOnly: true,
@@ -227,42 +247,32 @@ class _ChecklistFormState extends State<ChecklistForm> {
                   },
                 ),
               ),
-              SizedBox(height: 15),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 4,
-                ),
+              const SizedBox(height: 15),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: Text(
                   'INFORMACION DE LA UNIDAD',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),
-
+              // Placa
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 4,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: TextFormField(
                   controller: _placaController,
                   decoration: _inputDecoration(
                     label: 'Número de placa',
                     icon: Icons.directions_car,
                   ),
-                  validator: (value) =>
-                      value!.isEmpty ? 'Campo obligatorio' : null,
+                  validator: _campoObligatorio,
                   onChanged: (_) =>
                       widget.onInformacionUnidad(obtenerInfoUnidad()),
                   inputFormatters: [LengthLimitingTextInputFormatter(7)],
                 ),
               ),
-
+              // Tipo de transporte
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 4,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: DropdownButtonFormField<String>(
                   decoration: _inputDecoration(
                     label: 'Tipo de transporte',
@@ -282,12 +292,9 @@ class _ChecklistFormState extends State<ChecklistForm> {
                   },
                 ),
               ),
-
+              // Marca
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 4,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: DropdownButtonFormField<String>(
                   decoration: _inputDecoration(
                     label: 'Marca',
@@ -300,10 +307,7 @@ class _ChecklistFormState extends State<ChecklistForm> {
                       child: Text('INTERNATIONAL'),
                     ),
                     DropdownMenuItem(value: 'VOLVO', child: Text('VOLVO')),
-                    DropdownMenuItem(
-                      value: 'KENWORTH',
-                      child: Text('KENWORTH'),
-                    ),
+                    DropdownMenuItem(value: 'KENWORTH', child: Text('KENWORTH')),
                     DropdownMenuItem(
                       value: 'FREIGHTLINER',
                       child: Text('FREIGHTLINER'),
@@ -323,56 +327,44 @@ class _ChecklistFormState extends State<ChecklistForm> {
                   },
                 ),
               ),
-
+              // Modelo
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 4,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: TextFormField(
                   controller: _modeloController,
                   decoration: _inputDecoration(
                     label: 'Modelo',
                     icon: Icons.trending_flat,
                   ),
-                  validator: (value) =>
-                      value!.isEmpty ? 'Campo obligatorio' : null,
+                  validator: _campoObligatorio,
                   onChanged: (_) =>
                       widget.onInformacionUnidad(obtenerInfoUnidad()),
                 ),
               ),
-
+              // Color
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 4,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: TextFormField(
                   controller: _colorController,
                   decoration: _inputDecoration(
                     label: 'Color',
                     icon: Icons.palette,
                   ),
-                  validator: (value) =>
-                      value!.isEmpty ? 'Campo obligatorio' : null,
+                  validator: _campoObligatorio,
                   onChanged: (_) =>
-                     widget.onInformacionUnidad(obtenerInfoUnidad()),
+                      widget.onInformacionUnidad(obtenerInfoUnidad()),
                 ),
               ),
-
+              // VIN
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 4,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: TextFormField(
                   controller: _vinController,
                   decoration: _inputDecoration(
                     label: 'VIN',
                     icon: Icons.keyboard,
                   ),
-                  validator: (value) =>
-                      value!.isEmpty ? 'Campo obligatorio' : null,
+                  validator: _campoObligatorio,
                   onChanged: (_) =>
                       widget.onInformacionUnidad(obtenerInfoUnidad()),
                   inputFormatters: [LengthLimitingTextInputFormatter(17)],
@@ -400,7 +392,7 @@ class _ChecklistFormState extends State<ChecklistForm> {
       'color': _colorController.text,
       'vin': _vinController.text,
       'tipoTransporte': _tipoTransporte,
-      'marca': _marca
+      'marca': _marca,
     };
   }
 
@@ -419,17 +411,19 @@ class _ChecklistFormState extends State<ChecklistForm> {
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
-      child: Column(
-        children: [
-          _buildDatosGenerales(),
-          _buildSeccion('SISTEMA ELÉCTRICO', sistemaElectricoKeys),
-          _buildSeccion('PARTE EXTERIOR', parteExteriorKeys),
-          _buildSeccion('SISTEMA DE FRENOS', sistemaFrenosKeys),
-          _buildSeccion('SISTEMA MECÁNICO', sistemaMecanicoKeys),
-          _buildSeccion('SISTEMA DE LLANTAS', sistemaLlantasKeys),
-          _buildSeccion('PARTE INTERIOR', parteInteriorKeys),
-          _buildSeccion('DOCUMENTOS', documentosKeys),
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            _buildDatosGenerales(),
+            _buildSeccion('SISTEMA ELÉCTRICO', sistemaElectricoKeys),
+            _buildSeccion('PARTE EXTERIOR', parteExteriorKeys),
+            _buildSeccion('SISTEMA DE FRENOS', sistemaFrenosKeys),
+            _buildSeccion('SISTEMA MECÁNICO', sistemaMecanicoKeys),
+            _buildSeccion('SISTEMA DE LLANTAS', sistemaLlantasKeys),
+            _buildSeccion('PARTE INTERIOR', parteInteriorKeys),
+            _buildSeccion('DOCUMENTOS', documentosKeys),
+          ],
+        ),
       ),
     );
   }

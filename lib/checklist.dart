@@ -28,6 +28,9 @@ class _ChecklistState extends State<Checklist> {
   final Color primaryBlue = const Color(0xFF5677FC);
   final Color backgroundGray = const Color(0xFFF5F7FA);
 
+  
+  final GlobalKey<ChecklistFormState> _formKey = GlobalKey<ChecklistFormState>();
+
   void _onFormChanged(Map<String, String?> data) {
     _respuestas = data;
   }
@@ -36,7 +39,7 @@ class _ChecklistState extends State<Checklist> {
     _datosGenerales = generales;
   }
 
-  void _onInformacionUnidadChanged(Map<String, String> informacion){
+  void _onInformacionUnidadChanged(Map<String, String> informacion) {
     _informacionUnidad = informacion;
   }
 
@@ -56,6 +59,7 @@ class _ChecklistState extends State<Checklist> {
             child: Column(
               children: [
                 ChecklistForm(
+                  key: _formKey, // clave para acceder al método de validación
                   onChanged: _onFormChanged,
                   onDatosGeneralesChanged: _onDatosGeneralesChanged,
                   onInformacionUnidad: _onInformacionUnidadChanged,
@@ -66,23 +70,24 @@ class _ChecklistState extends State<Checklist> {
                   width: double.infinity,
                   child: ElevatedButton.icon(
                     onPressed: () async {
+                      // Validar antes de guardar
+                      if (!(_formKey.currentState?.validarFormulario() ?? false)) {
+                        return; // si falla validación, no sigue
+                      }
+
                       showDialog(
                         context: context,
                         barrierDismissible: false,
                         builder: (_) =>
                             const Center(child: CircularProgressIndicator()),
                       );
-                      final inspeccionService = InspeccionService(
-                        firebaseService: FirebaseService(),
-                        pdfService: PdfService(),
+
+                      final pdfFile = await _inspeccionService.guardarInspeccion(
+                        context: context,
+                        datosGenerales: _datosGenerales,
+                        informacionUnidad: _informacionUnidad,
+                        respuestas: _respuestas,
                       );
-                      final pdfFile = await _inspeccionService
-                          .guardarInspeccion(
-                            context: context,
-                            datosGenerales: _datosGenerales,
-                            informacionUnidad: _informacionUnidad,
-                            respuestas: _respuestas,
-                          );
 
                       Navigator.of(context).pop(); // cerrar loading
 
@@ -96,9 +101,11 @@ class _ChecklistState extends State<Checklist> {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => PdfViewerScreen(pdfFile: pdfFile,
-                            userName: widget.userName,
-                            userEmail: widget.userEmail,),
+                            builder: (_) => PdfViewerScreen(
+                              pdfFile: pdfFile,
+                              userName: widget.userName,
+                              userEmail: widget.userEmail,
+                            ),
                           ),
                         );
                       }
