@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:get/instance_manager.dart';
 import 'package:inspect/preguntas.dart';
 
 class ChecklistForm extends StatefulWidget {
@@ -37,7 +39,7 @@ class ChecklistFormState extends State<ChecklistForm> {
   final _vinController = TextEditingController();
 
   String _tipoTransporte = 'Cabezal';
-  String _marca = 'INTERNATIONAL';
+  String? _marca;
 
   @override
   void initState() {
@@ -45,13 +47,6 @@ class ChecklistFormState extends State<ChecklistForm> {
     final hoy = DateTime.now();
     _fechaController.text =
         '${hoy.day.toString().padLeft(2, '0')}/${hoy.month.toString().padLeft(2, '0')}/${hoy.year}';
-  }
-
-  String? _campoObligatorio(String? valor) {
-    if (valor == null || valor.trim().isEmpty) {
-      return 'Campo obligatorio';
-    }
-    return null;
   }
 
   bool _validarPreguntas(List<String> claves) {
@@ -72,11 +67,29 @@ class ChecklistFormState extends State<ChecklistForm> {
         !_validarPreguntas(sistemaLlantasKeys) ||
         !_validarPreguntas(parteInteriorKeys) ||
         !_validarPreguntas(documentosKeys)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Responde todas las preguntas del checklist'),
+
+      Get.snackbar(
+        '','',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.redAccent,
+        margin: const EdgeInsets.all(10),
+        borderRadius: 8,
+        titleText: Text(
+          '¡Error!',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
         ),
-      );
+        messageText: Text(
+          '¡Responde todas las preguntas del checklist!',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 15,
+          ),
+        ),
+        );
       return false;
     }
     return true;
@@ -112,6 +125,7 @@ class ChecklistFormState extends State<ChecklistForm> {
                       widget.onChanged(_respuestas);
                     });
                   },
+                  fillColor: MaterialStateColor.resolveWith((states) => Colors.blue),
                 ),
                 Text(opcion),
               ],
@@ -216,9 +230,28 @@ class ChecklistFormState extends State<ChecklistForm> {
                     label: 'Conductor',
                     icon: Icons.person_3,
                   ),
-                  validator: _campoObligatorio,
-                  onChanged: (_) =>
-                      widget.onDatosGeneralesChanged(obtenerDatosGenerales()),
+
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Ingresa el nombre del conductor';
+                    }
+                    final regex = RegExp(r'^[a-zA-Z\s]+$');
+                    if (!regex.hasMatch(value)) {
+                      return 'Solo se permiten letras';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {
+                    _conductorController.value = _conductorController.value.copyWith(
+                      text: value.toUpperCase(),
+                      selection: _conductorController.selection,
+                    );
+                    widget.onDatosGeneralesChanged(obtenerDatosGenerales());
+                  },
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]')),
+                  ],
+                  textCapitalization: TextCapitalization.words,  
                 ),
               ),
               // Fecha
@@ -264,10 +297,28 @@ class ChecklistFormState extends State<ChecklistForm> {
                     label: 'Número de placa',
                     icon: Icons.directions_car,
                   ),
-                  validator: _campoObligatorio,
-                  onChanged: (_) =>
-                      widget.onInformacionUnidad(obtenerInfoUnidad()),
-                  inputFormatters: [LengthLimitingTextInputFormatter(7)],
+                  validator: (value){
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor ingrese el número de placa';
+                    }
+                    if (value.length < 7) {
+                      return 'El número de placa debe tener 7 caracteres';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {
+                    _placaController.value = _placaController.value.copyWith(
+                      text: value.toUpperCase(),
+                      selection: _placaController.selection,
+                    );
+                    widget.onInformacionUnidad(obtenerInfoUnidad());
+                  },
+                  //Validacion para las placas en Honduras empiezan con 3 letras seguidas de 4 números
+                  inputFormatters: [
+                    LengthLimitingTextInputFormatter(7),
+                    FilteringTextInputFormatter.allow(RegExp(r'[A-Z0-9]')),
+                  ],
+                  textCapitalization: TextCapitalization.characters,
                 ),
               ),
               // Tipo de transporte
@@ -279,8 +330,10 @@ class ChecklistFormState extends State<ChecklistForm> {
                     icon: Icons.airport_shuttle,
                   ),
                   value: _tipoTransporte,
+                  dropdownColor: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
                   items: const [
-                    DropdownMenuItem(value: 'Cabezal', child: Text('Cabezal')),
+                    DropdownMenuItem(value: 'Cabezal', child: Text('CABEZAL')),
                   ],
                   onChanged: (value) {
                     if (value != null) {
@@ -301,6 +354,9 @@ class ChecklistFormState extends State<ChecklistForm> {
                     icon: Icons.format_list_bulleted,
                   ),
                   value: _marca,
+                  hint: const Text('Seleccione una marca'),
+                  dropdownColor: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
                   items: const [
                     DropdownMenuItem(
                       value: 'INTERNATIONAL',
@@ -325,6 +381,12 @@ class ChecklistFormState extends State<ChecklistForm> {
                       });
                     }
                   },
+                  validator: (value){
+                    if (value == null || value.isEmpty) {
+                      return 'Seleccione una marca';
+                    }
+                    return null;
+                  }
                 ),
               ),
               // Modelo
@@ -336,9 +398,28 @@ class ChecklistFormState extends State<ChecklistForm> {
                     label: 'Modelo',
                     icon: Icons.trending_flat,
                   ),
-                  validator: _campoObligatorio,
-                  onChanged: (_) =>
-                      widget.onInformacionUnidad(obtenerInfoUnidad()),
+                  validator: (value){
+                    if (value == null || value.isEmpty) {
+                      return 'Ingresa el modelo del cabezal';
+                    }
+                    final regex = RegExp(r'^[a-zA-Z0-9\s]+$');
+                    if (!regex.hasMatch(value)) {
+                      return 'Solo se permiten letras, números';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {
+                    _modeloController.value = _modeloController.value.copyWith(
+                      text: value.toUpperCase(),
+                      selection: _modeloController.selection,
+                    );
+                    widget.onInformacionUnidad(obtenerInfoUnidad());
+                  },
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9\s]')),
+                  ],
+                  textCapitalization: TextCapitalization.words,
+                      
                 ),
               ),
               // Color
@@ -350,9 +431,27 @@ class ChecklistFormState extends State<ChecklistForm> {
                     label: 'Color',
                     icon: Icons.palette,
                   ),
-                  validator: _campoObligatorio,
-                  onChanged: (_) =>
-                      widget.onInformacionUnidad(obtenerInfoUnidad()),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Ingrese el color del cabezal';
+                    }
+                    final regex = RegExp(r'^[a-zA-Z\s]+$');
+                    if (!regex.hasMatch(value)) {
+                      return 'Solo se permiten letras';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {
+                    _colorController.value = _colorController.value.copyWith(
+                      text: value.toUpperCase(),
+                      selection: _colorController.selection,
+                    );
+                    widget.onInformacionUnidad(obtenerInfoUnidad());
+                  },
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]')),
+                  ],
+                  textCapitalization: TextCapitalization.words,   
                 ),
               ),
               // VIN
@@ -364,10 +463,32 @@ class ChecklistFormState extends State<ChecklistForm> {
                     label: 'VIN',
                     icon: Icons.keyboard,
                   ),
-                  validator: _campoObligatorio,
-                  onChanged: (_) =>
-                      widget.onInformacionUnidad(obtenerInfoUnidad()),
-                  inputFormatters: [LengthLimitingTextInputFormatter(17)],
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor ingresa el número de VIN';
+                    }
+                    if (value.length != 17) {
+                      return 'El VIN debe contener 17 caracteres';
+                    }
+                    //El numero de VIN siempre contiene 17 caracteres de los cuales se excluyen o no contienen las letras I,O,Q
+                    final vinRegex = RegExp(r'^[A-HJ-NPR-Z0-9]{17}$');
+                    if (!vinRegex.hasMatch(value.toUpperCase())) {
+                      return 'VIN invalido, solo letras y números válidos';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {
+                    _vinController.value = _vinController.value.copyWith(
+                      text: value.toUpperCase(),
+                      selection: _vinController.selection,
+                    );
+                    widget.onInformacionUnidad(obtenerInfoUnidad());
+                  },
+                  inputFormatters: [
+                    LengthLimitingTextInputFormatter(17),
+                    FilteringTextInputFormatter.allow(RegExp(r'[A-HJ-NPR-Z0-9]')),
+                  ],
+                  textCapitalization: TextCapitalization.characters,
                 ),
               ),
             ],
@@ -392,7 +513,7 @@ class ChecklistFormState extends State<ChecklistForm> {
       'color': _colorController.text,
       'vin': _vinController.text,
       'tipoTransporte': _tipoTransporte,
-      'marca': _marca,
+      'marca': _marca ?? '',
     };
   }
 
