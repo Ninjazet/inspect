@@ -7,23 +7,23 @@ class FirebaseService {
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
   Future<int> obtenerNumeroInspeccion() async {
-  final contadorRef = _db.collection('config').doc('contadorInspecciones');
+    final contadorRef = _db.collection('config').doc('contadorInspecciones');
 
-  return _db.runTransaction((transaction) async {
-    final snapshot = await transaction.get(contadorRef);
-    int nuevoNumero;
+    return _db.runTransaction((transaction) async {
+      final snapshot = await transaction.get(contadorRef);
+      int nuevoNumero;
 
-    if (!snapshot.exists) {
-      nuevoNumero = 1; // Si no existe, iniciamos en 1
-      transaction.set(contadorRef, {'valor': nuevoNumero});
-    } else {
-      nuevoNumero = snapshot['valor'] + 1;
-      transaction.update(contadorRef, {'valor': FieldValue.increment(1)});
-    }
+      if (!snapshot.exists) {
+        nuevoNumero = 1;
+        transaction.set(contadorRef, {'valor': nuevoNumero});
+      } else {
+        nuevoNumero = snapshot['valor'] + 1;
+        transaction.update(contadorRef, {'valor': FieldValue.increment(1)});
+      }
 
-    return nuevoNumero;
-  });
-}
+      return nuevoNumero;
+    });
+  }
 
   Future<void> guardarInspeccionBasica({
     required String conductor,
@@ -69,31 +69,31 @@ class FirebaseService {
   }
 
   Future<void> guardarInspeccionCompleta({
-  required String placa,
-  required String fecha,
-  required String inspector,
-  required String conductor,
-  required String tipoTransporte,
-  required String marca,
-  required String modelo,
-  required String color,
-  required String vin,
-  required String pdfUrl,
-  required String numeroInspeccion, 
-}) async {
-  await _db.collection('inspecciones').add({
-    'placa': placa,
-    'numeroInspeccion': numeroInspeccion,
-    'fecha': fecha,
-    'inspector': inspector,
-    'conductor': conductor,
-    'tipoTransporte': tipoTransporte,
-    'marca': marca,
-    'modelo': modelo,
-    'color': color,
-    'vin': vin,
-    'pdfUrl': pdfUrl,
-    'fechaRegistro': FieldValue.serverTimestamp(),
-  });
-}
+    required String placa,
+    required String fecha,
+    required String inspector,
+    required String conductor,
+    required String tipoTransporte,
+    required String marca,
+    required String modelo,
+    required String color,
+    required String vin,
+    required String pdfUrl,
+    required String numeroInspeccion,
+  }) async {
+    await _db.collection('inspecciones').add({
+      'placa': placa,
+      'numeroInspeccion': numeroInspeccion,
+      'fecha': fecha,
+      'inspector': inspector,
+      'conductor': conductor,
+      'tipoTransporte': tipoTransporte,
+      'marca': marca,
+      'modelo': modelo,
+      'color': color,
+      'vin': vin,
+      'pdfUrl': pdfUrl,
+      'fechaRegistro': FieldValue.serverTimestamp(),
+    });
+  }
 }
