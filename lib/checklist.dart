@@ -89,7 +89,7 @@ class _ChecklistState extends State<Checklist> {
                         respuestas: _respuestas,
                       );
 
-                      Navigator.of(context).pop(); // cerrar loading
+                      Navigator.of(context).pop(); 
 
                       if (pdfFile != null && mounted) {
                         setState(() {

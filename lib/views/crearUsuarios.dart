@@ -18,8 +18,8 @@ class _CrearusuarioState extends State<Crearusuario> {
   bool _obscure = true;
   bool _loading = false;
 
-  static const Color _primary = Color(0xFF004780); // azul de la app
-  static const Color _bg = Color(0xFFF2F6FA); // fondo gris claro
+  static const Color _primary = Color(0xFF004780);
+  static const Color _bg = Color(0xFFF2F6FA); 
 
   @override
   void dispose() {
@@ -105,7 +105,7 @@ class _CrearusuarioState extends State<Crearusuario> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Encabezado con degradado para mantener el look & feel
+         
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 26),
@@ -139,7 +139,7 @@ class _CrearusuarioState extends State<Crearusuario> {
 
             const SizedBox(height: 16),
 
-            // Card con el formulario
+          
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Card(
@@ -198,7 +198,6 @@ class _CrearusuarioState extends State<Crearusuario> {
                         ),
                         const SizedBox(height: 18),
 
-                        // Botón primario con el mismo estilo moderno (degradado)
                         PerfilPrimaryButton(
                           text: 'Crear cuenta',
                           icon: Icons.check_circle_outline,
@@ -221,7 +220,7 @@ class _CrearusuarioState extends State<Crearusuario> {
   }
 }
 
-/// Botón primario reutilizable (mismo estilo que en Perfil)
+
 class PerfilPrimaryButton extends StatelessWidget {
   const PerfilPrimaryButton({
     super.key,

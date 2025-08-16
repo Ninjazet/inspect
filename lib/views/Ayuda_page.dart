@@ -55,7 +55,7 @@ class AyudaPage extends StatelessWidget {
                   title: 'WhatsApp Soporte',
                   onTap: () => _openUrl(
                     Uri.parse(
-                      'https://api.whatsapp.com/send?phone=+50493675475&text=Hola.%20Necesito%20ayuda',
+                      'https://api.whatsapp.com/send?phone=+50494934008&text=Hola.%20Necesito%20ayuda',
                     ),
                   ),
                 ),
@@ -65,7 +65,7 @@ class AyudaPage extends StatelessWidget {
                   title: 'Correo de soporte',
                   onTap: () => _openUrl(
                     Uri.parse(
-                      'mailto:oemaldonado@uth.hn?subject=Soporte%20Inspect&body=Hola%2C%20necesito%20ayuda...',
+                      'mailto:appmovil333@gmail.com?subject=Soporte%20Inspect&body=Hola%2C%20necesito%20ayuda...',
                     ),
                   ),
                 ),
@@ -106,11 +106,11 @@ class AyudaPage extends StatelessWidget {
         children: const [
           _FaqItem(
             q: '¿Cómo inicio sesión?',
-            a: 'Usa tu correo y contraseña registrados.',
+            a: 'Usa tu correo y contraseña asignado',
           ),
           _FaqItem(
             q: '¿Olvidé mi contraseña?',
-            a: 'Toca “¿Olvidaste tu contraseña?” en el login.',
+            a: 'Consulta con tu administrador',
           ),
           _FaqItem(
             q: '¿No veo mis inspecciones?',

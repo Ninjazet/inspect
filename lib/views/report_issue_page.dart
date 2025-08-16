@@ -86,7 +86,7 @@ class _ReportIssuePageState extends State<ReportIssuePage> {
             ),
             TextButton(
               onPressed: () async {
-                // Abrir WhatsApp con el ID del ticket
+                
                 final uri = Uri.parse(
                   'https://api.whatsapp.com/send?phone=+50493675475&text=Hola.%20Tengo%20un%20reporte%20(ID:%20$id)',
                 );

@@ -112,7 +112,7 @@ class PdfService {
             titulo,
             style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold),
           ),
-          pw.SizedBox(height: 6), // Espacio pequeño antes de la tabla
+          pw.SizedBox(height: 6), 
           pw.Table(
             border: pw.TableBorder.all(),
             children: [
@@ -120,7 +120,7 @@ class PdfService {
               for (final key in keys) _filaDato(key, respuestas[key]),
             ],
           ),
-          pw.SizedBox(height: 12), // Espacio pequeño entre secciones
+          pw.SizedBox(height: 12), 
         ],
       );
     }

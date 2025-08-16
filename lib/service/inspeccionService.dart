@@ -39,7 +39,7 @@ class InspeccionService {
       datosConNumero.addAll(informacionUnidad);
       datosConNumero['numeroInspeccion'] = numeroInspeccion.toString();
 
-      //  Limpiar respuestas nulas
+      //  Limpiar 
       final respuestasLimpias =
           respuestas.map((k, v) => MapEntry(k, v ?? ''));
 
@@ -52,7 +52,7 @@ class InspeccionService {
       );
 
       if (pdfFile == null) {
-        Navigator.pop(context); // cerrar modal
+        Navigator.pop(context); 
         showTopSnackBar(
           Overlay.of(context),
           CustomSnackBar.error(
@@ -68,7 +68,7 @@ class InspeccionService {
         return null;
       }
 
-      // Subir PDF y obtener URL
+      // Subir PDF 
       final pdfUrl = await firebaseService.subirPdfYObtenerUrl(
         pdfFile: pdfFile,
         placa: datosConNumero['placa'] ?? '',
@@ -91,7 +91,7 @@ class InspeccionService {
       );
 
       
-      Navigator.pop(context); // cerrar modal
+      Navigator.pop(context); 
       showTopSnackBar(
         Overlay.of(context),
         CustomSnackBar.success(
@@ -107,7 +107,7 @@ class InspeccionService {
 
       return pdfFile;
     } catch (e) {
-      Navigator.pop(context); // cerrar modal
+      Navigator.pop(context);
       showTopSnackBar(
         Overlay.of(context),
         CustomSnackBar.error(

@@ -103,13 +103,13 @@ Future<void> _agregarNota() async {
       firstDate: ahora.subtract(Duration(days: 365)),
       lastDate: ahora.add(Duration(days: 365 * 5)),
       builder: (context, child) {
-        // Aplica tema personalizado para el datepicker
+        
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: ColorScheme.light(
-              primary: primaryBlue, // Header background color
-              onPrimary: Colors.white, // Header text color
-              onSurface: primaryBlue, // Body text color
+              primary: primaryBlue, 
+              onPrimary: Colors.white, 
+              onSurface: primaryBlue, 
             ),
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(foregroundColor: orangeAccent),

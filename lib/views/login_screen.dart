@@ -33,22 +33,22 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _isLoading = true);
 
     try {
-      // Tries to authenticate with Firebase
+      
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(
               email: _emailController.text.trim(),
               password: _passwordController.text.trim());
 
-      // If it gets here, the login was successful
+     
       final user = userCredential.user;
       if (user != null) {
         String userName = user.displayName ?? 'Usuario';
-        // Save data to GetStorage
+        
         storage.write('logueado', true);
-        storage.write('userEmail', user.email); // <-- CHANGED: 'usuario' to 'userEmail' for consistency
-        storage.write('userName', userName); // <-- ADDED: Save user's name
+        storage.write('userEmail', user.email);
+        storage.write('userName', userName);
 
-        // Redirect
+       
         Get.offAll(MainNavigation(userEmail: user.email!, userName: userName), transition: Transition.rightToLeft);
       }
     } on FirebaseAuthException catch (e) {
@@ -251,15 +251,15 @@ Widget _buildTop() {
             minimumSize: MaterialStateProperty.all(const Size.fromHeight(60)),
             backgroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
             if (states.contains(MaterialState.pressed)) {
-              return Colors.white; // Background color when pressed
+              return Colors.white; 
             }
-            return Colors.blue; // Default background color
+            return Colors.blue; 
             }),
             foregroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
             if (states.contains(MaterialState.pressed)) {
-              return Colors.blue; // Text color when pressed
+              return Colors.blue; 
             }
-            return Colors.white; // Default text color
+            return Colors.white;
             }),
             ),
             child: _isLoading

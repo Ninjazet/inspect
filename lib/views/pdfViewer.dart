@@ -18,9 +18,9 @@ class PdfViewerScreen extends StatefulWidget {
 }
 
 class _PdfViewerScreenState extends State<PdfViewerScreen> {
-  final Color primaryBlue = const Color(0xFF004080); // azul oscuro similar al login
-  final Color orangeAccent = const Color(0xFFF77F00); // naranja usado en texto
-  final Color grayLight = const Color(0xFFF0F4F8); // gris muy claro para fondo
+  final Color primaryBlue = const Color(0xFF004080); 
+  final Color orangeAccent = const Color(0xFFF77F00); 
+  final Color grayLight = const Color(0xFFF0F4F8); 
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +100,7 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
                   ),
                   const SizedBox(height: 14),
 
-                  // Botón ir a inicio
+               
                   ElevatedButton.icon(
                     onPressed: () {
                       Navigator.push(
@@ -128,7 +128,7 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
                   ),
                   const SizedBox(height: 14),
 
-                  // Botón ver historial
+                 
                   ElevatedButton.icon(
                     onPressed: () {
                       Navigator.push(

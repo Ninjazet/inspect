@@ -11,8 +11,8 @@ class PerfilPage extends StatelessWidget {
   final String userEmail;
   final String userName;
 
-  static const Color _primary = Color(0xFF004780); // azul base
-  static const Color _bg = Color(0xFFF2F6FA); // fondo claro
+  static const Color _primary = Color(0xFF004780);
+  static const Color _bg = Color(0xFFF2F6FA); 
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class PerfilPage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Header con degradado
+         
             Container(
               width: double.infinity,
               padding: const EdgeInsets.only(top: 28, bottom: 28),
@@ -80,7 +80,7 @@ class PerfilPage extends StatelessWidget {
 
             const SizedBox(height: 16),
 
-            // Card info
+          
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Card(
@@ -136,7 +136,7 @@ class PerfilPage extends StatelessWidget {
 
             const SizedBox(height: 22),
 
-            // ÚNICO botón (estilo moderno) — solo para admin
+           
             if (userEmail == 'admin@fleetcheck.com')
               Center(
                 child: PerfilPrimaryButton(
@@ -160,7 +160,7 @@ class PerfilPage extends StatelessWidget {
   }
 }
 
-/// Botón primario con el estilo de la pantalla (azul degradado + sombra).
+
 class PerfilPrimaryButton extends StatelessWidget {
   const PerfilPrimaryButton({
     super.key,
