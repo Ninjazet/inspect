@@ -1,8 +1,16 @@
+// HomePage.dart
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:inspect/checklist.dart';
 import 'package:inspect/views/Recordatorio.dart';
 import 'package:inspect/views/historial.dart';
+
+final storage = GetStorage();
+final usuarioCache = storage.read('usuario') ?? ""; 
+final user = FirebaseAuth.instance.currentUser;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.userName, required this.userEmail});
@@ -15,10 +23,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final Color primaryBlue = const Color(0xFF004080); // Azul oscuro
-  final Color orangeAccent = const Color(0xFFF77F00); // Naranja
-  final Color yellowSoft = const Color(0xFFFFD54F); // Amarillo suave
-  final Color grayLight = const Color(0xFFF0F4F8); // Gris claro de fondo
+  final Color primaryBlue = const Color(0xFF004080); // Dark Blue
+  final Color orangeAccent = const Color(0xFFF77F00); // Orange
+  final Color yellowSoft = const Color(0xFFFFD54F); // Soft Yellow
+  final Color grayLight = const Color(0xFFF0F4F8); // Light gray background
 
   final _notasCollection = FirebaseFirestore.instance.collection('notas');
 
@@ -46,11 +54,10 @@ class _HomePageState extends State<HomePage> {
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
-                    title: Text('Recordatorios', style: TextStyle(color: primaryBlue, fontWeight: FontWeight.bold)),
-
+            title: Text('Recordatorios', style: TextStyle(color: primaryBlue, fontWeight: FontWeight.bold)),
           content: Text('Hay recordatorios pendientes para hoy.',style: TextStyle(color: primaryBlue)),
           actions: [
-             TextButton(
+              TextButton(
               onPressed: () => Navigator.of(context).pop(),
               child: Text('Cerrar', style: TextStyle(color: orangeAccent)),
             ),
@@ -72,7 +79,7 @@ class _HomePageState extends State<HomePage> {
         width: 120,
         height: 120,
         decoration: BoxDecoration(
-          color: Colors.white, // fondo blanco para contraste
+          color: Colors.white, // white background for contrast
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
@@ -92,7 +99,7 @@ class _HomePageState extends State<HomePage> {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
-                color: primaryBlue, // texto en azul oscuro
+                color: primaryBlue, // dark blue text
               ),
             ),
           ],
@@ -130,13 +137,9 @@ class _HomePageState extends State<HomePage> {
           children: [
             Center(
               child: Text(
-                "Bienvenido ${widget.userName}",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: primaryBlue,
-                ),
+                "Bienvenido, ${widget.userName}",
               ),
+              
             ),
             const SizedBox(height: 84),
             Center(

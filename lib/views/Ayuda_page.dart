@@ -15,7 +15,7 @@ class AyudaPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: _primary,
         centerTitle: true,
-        title: const Text('Ayuda'),
+         title:  Text('Ayuda', style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,),),
         elevation: 0,
       ),
       body: SingleChildScrollView(

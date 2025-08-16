@@ -1,3 +1,5 @@
+// LoginScreen.dart
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -33,22 +35,22 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _isLoading = true);
 
     try {
-      // Intenta autenticar con Firebase
+      // Tries to authenticate with Firebase
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(
               email: _emailController.text.trim(),
               password: _passwordController.text.trim());
 
-      // Si llega aquí, el login fue exitoso
+      // If it gets here, the login was successful
       final user = userCredential.user;
       if (user != null) {
         String userName = user.displayName ?? 'Usuario';
-        // Guardar datos en GetStorage
+        // Save data to GetStorage
         storage.write('logueado', true);
-        storage.write('usuario', user.email);
-        storage.write('nombre', userName);
+        storage.write('userEmail', user.email); // <-- CHANGED: 'usuario' to 'userEmail' for consistency
+        storage.write('userName', userName); // <-- ADDED: Save user's name
 
-        // Redireccionar
+        // Redirect
         Get.offAll(MainNavigation(userEmail: user.email!, userName: userName), transition: Transition.rightToLeft);
       }
     } on FirebaseAuthException catch (e) {
@@ -81,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
   }
- 
+  
   @override
   void dispose() {
     _emailController.dispose();
@@ -129,7 +131,7 @@ Widget _buildTop() {
               ),
             ],
           ),
-       child: Image.asset(
+        child: Image.asset(
           'assets/image/fleetcheck0.png', 
           width: 500,
         ),
@@ -251,36 +253,36 @@ Widget _buildTop() {
             minimumSize: MaterialStateProperty.all(const Size.fromHeight(60)),
             backgroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
             if (states.contains(MaterialState.pressed)) {
-              return Colors.white; // Color de fondo cuando se presiona
+              return Colors.white; // Background color when pressed
             }
-            return Colors.blue; // Color de fondo por defecto
-          }),
-          foregroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
-          if (states.contains(MaterialState.pressed)) {
-            return Colors.blue; // Color del texto cuando se presiona
-          }
-          return Colors.white; // Color del texto por defecto
-          }),
-        ),
-        child: _isLoading
-          ? const SizedBox(
-              width: 24,
-              height: 24,
-              child: CircularProgressIndicator(
-                color: Colors.white,
-                strokeWidth: 2,
-              ),
-           )
-            : const Text(
-              'Ingresar',
-               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            return Colors.blue; // Default background color
+            }),
+            foregroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+            if (states.contains(MaterialState.pressed)) {
+              return Colors.blue; // Text color when pressed
+            }
+            return Colors.white; // Default text color
+            }),
+            ),
+            child: _isLoading
+              ? const SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  ),
+                )
+                : const Text(
+                  'Ingresar',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
             ),
           ),
-        ),
           const SizedBox(height: 12),
           TextButton(
             onPressed: () {
-              // Lógica para recuperar contraseña
+              // Password recovery logic
             },
             child: const Text('¿Olvidaste tu contraseña?',style: TextStyle(color: Color.fromARGB(255, 0, 71, 128))),
             
