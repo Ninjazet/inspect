@@ -1,5 +1,3 @@
-// LoginScreen.dart
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -282,7 +280,6 @@ Widget _buildTop() {
           const SizedBox(height: 12),
           TextButton(
             onPressed: () {
-              // Password recovery logic
             },
             child: const Text('¿Olvidaste tu contraseña?',style: TextStyle(color: Color.fromARGB(255, 0, 71, 128))),
             

@@ -1,5 +1,3 @@
-
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -21,7 +19,7 @@ void main() async {
   final user = FirebaseAuth.instance.currentUser;
 
   if (user != null) {
-    // We save the cache
+    
     storage.write('logueado', true);
     storage.write('userEmail', user.email);
     storage.write('userName', user.displayName);

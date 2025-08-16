@@ -137,7 +137,6 @@ class _HomePageState extends State<HomePage> {
               child: Text(
                 "Bienvenido, ${widget.userName}",
               ),
-              
             ),
             const SizedBox(height: 84),
             Center(
