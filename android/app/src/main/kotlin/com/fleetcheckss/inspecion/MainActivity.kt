@@ -1,4 +1,4 @@
-package com.example.inspect
+package com.fleetcheckss.inspecion
 
 import io.flutter.embedding.android.FlutterActivity
 
